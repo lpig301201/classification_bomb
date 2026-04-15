@@ -3,181 +3,190 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>分類炸彈大挑戰</title>
+  <title>分類炸彈大挑戰｜活動版</title>
   <style>
     :root {
-      --bg1:#062b22; --bg2:#0b3b2e; --bg3:#0f172a;
+      --bg1:#0b5d46; --bg2:#083527; --bg3:#071620;
       --panel:rgba(255,255,255,.12); --line:rgba(255,255,255,.14);
-      --text:#f8fafc; --muted:#d5e5df; --good:#22c55e; --bad:#ef4444; --goal:#f59e0b; --mint:#5eead4;
-      --shadow:0 18px 40px rgba(0,0,0,.28);
-      --safe-top: env(safe-area-inset-top, 0px);
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --text:#f8fafc; --muted:#d8ebe5; --good:#22c55e; --bad:#ef4444; --goal:#fbbf24;
+      --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --shadow:0 18px 50px rgba(0,0,0,.28);
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
     html,body { margin:0; min-height:100%; overflow:hidden; font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; color:var(--text); }
     body {
       display:flex; justify-content:center;
       background:
-        radial-gradient(circle at 15% 18%, rgba(52,211,153,.22), transparent 20%),
-        radial-gradient(circle at 82% 15%, rgba(34,197,94,.18), transparent 18%),
-        linear-gradient(180deg, #0b5d46 0%, #083527 28%, #06141f 100%);
+        radial-gradient(circle at 18% 15%, rgba(45,212,191,.20), transparent 18%),
+        radial-gradient(circle at 85% 10%, rgba(34,197,94,.16), transparent 18%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 36%, var(--bg3) 100%);
     }
-    .app { width:min(100vw,820px); min-height:100vh; position:relative; overflow:hidden; }
+    .app { width:min(100vw,900px); min-height:100vh; position:relative; overflow:hidden; }
     #arena { position:absolute; inset:0; overflow:hidden; touch-action:none; }
     #arena::before, #arena::after {
-      content:""; position:absolute; border-radius:50%; filter:blur(34px); opacity:.32; pointer-events:none;
+      content:""; position:absolute; border-radius:50%; filter:blur(38px); opacity:.28; pointer-events:none;
     }
-    #arena::before { width:300px; height:300px; background:#10b981; left:-70px; top:18%; }
-    #arena::after { width:280px; height:280px; background:#14b8a6; right:-80px; bottom:12%; }
-    .leaf {
-      position:absolute; opacity:.16; pointer-events:none; font-size:22px; animation:floatLeaf linear infinite;
+    #arena::before { width:320px; height:320px; background:#34d399; left:-90px; top:16%; }
+    #arena::after { width:280px; height:280px; background:#2dd4bf; right:-80px; bottom:8%; }
+    .bubble {
+      position:absolute; opacity:.12; pointer-events:none; animation:floatBubble linear infinite; font-size:clamp(18px,2vw,26px);
     }
-    @keyframes floatLeaf {
-      from { transform:translateY(105vh) rotate(0deg); }
-      to { transform:translateY(-15vh) rotate(360deg); }
+    @keyframes floatBubble { from { transform:translateY(108vh) rotate(0); } to { transform:translateY(-14vh) rotate(360deg); } }
+
+    .glass {
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+      border:1px solid var(--line); border-radius:24px;
+      backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:var(--shadow);
     }
 
-    .topbar { position:absolute; inset:0 0 auto 0; z-index:30; padding:calc(12px + var(--safe-top)) 14px 10px; }
-    .glass { background:var(--panel); border:1px solid var(--line); border-radius:24px; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:var(--shadow); }
-    .headline {
-      padding:14px; display:grid; grid-template-columns:1.1fr .9fr; gap:10px; align-items:stretch;
-    }
-    .title { font-size:clamp(24px,5vw,34px); font-weight:900; line-height:1.05; letter-spacing:.5px; }
+    .topbar { position:absolute; inset:0 0 auto 0; z-index:30; padding:calc(12px + var(--safe-top)) 14px 8px; }
+    .hero { padding:14px; display:grid; grid-template-columns:1.15fr .85fr; gap:10px; align-items:stretch; }
+    .title { font-size:clamp(24px,5vw,36px); font-weight:950; line-height:1.05; letter-spacing:.5px; }
     .subtitle { margin-top:6px; color:var(--muted); font-size:13px; line-height:1.45; }
     .scoreboard { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
     .metric { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:10px 8px; text-align:center; }
     .metric .k { font-size:12px; color:var(--muted); margin-bottom:4px; }
     .metric .v { font-size:clamp(22px,4vw,28px); font-weight:900; }
     .goal { color:#fde68a; }
-    .mission {
-      margin-top:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+
+    .missionline {
+      margin-top:10px; padding:12px 14px; display:grid; grid-template-columns:auto auto 1fr; gap:12px; align-items:center;
     }
-    .mission-label { font-size:13px; color:var(--muted); }
-    .mission-value { font-size:clamp(19px,4vw,26px); font-weight:900; }
-    .mission .tag { padding:8px 12px; border-radius:999px; background:rgba(16,185,129,.14); color:#ccfbf1; border:1px solid rgba(45,212,191,.28); font-size:13px; white-space:nowrap; }
+    .labelmini { font-size:12px; color:var(--muted); margin-bottom:4px; }
+    .targetbox {
+      padding:10px 14px; min-width:132px; border-radius:18px;
+      background:linear-gradient(180deg, rgba(34,197,94,.20), rgba(16,185,129,.08));
+      border:1px solid rgba(110,231,183,.26);
+    }
+    .targetvalue { font-size:clamp(18px,3.5vw,24px); font-weight:900; letter-spacing:.5px; }
     .descbox {
-      margin-top:10px; padding:12px 14px; display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start;
+      min-height:72px; padding:10px 12px; border-radius:18px;
+      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+      display:grid; grid-template-columns:44px 1fr; gap:10px; align-items:center;
     }
-    .desc-icon {
-      width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
+    .descicon {
+      width:44px; height:44px; border-radius:14px; display:grid; place-items:center; font-size:24px;
       background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
-      border:1px solid rgba(255,255,255,.16); font-size:22px;
+      border:1px solid rgba(255,255,255,.14);
     }
-    .desc-title { font-size:12px; color:var(--muted); margin-bottom:4px; }
-    .desc-item { font-size:18px; font-weight:800; margin-bottom:4px; }
-    .desc-text { font-size:13px; line-height:1.5; color:#effaf6; }
-    .desc-placeholder { color:var(--muted); }
+    .descitem { font-size:16px; font-weight:900; margin-bottom:2px; }
+    .desctext { font-size:12px; line-height:1.45; color:#effaf6; }
+    .placeholder { color:var(--muted); }
 
     .controls {
       position:absolute; left:0; right:0; bottom:calc(14px + var(--safe-bottom)); z-index:30; padding:0 14px;
     }
-    .foot {
-      padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;
-    }
-    .hint { color:var(--muted); font-size:12px; line-height:1.4; }
-    .btns { display:flex; gap:10px; }
-    button {
-      border:0; border-radius:16px; padding:12px 18px; font-size:16px; font-weight:800; color:white; cursor:pointer;
-      box-shadow:var(--shadow);
+    .foot { padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+    .hint { color:var(--muted); font-size:12px; line-height:1.35; }
+    .btns { display:flex; gap:8px; flex-wrap:wrap; }
+    button, .fakebtn {
+      border:0; border-radius:16px; padding:12px 18px; font-size:15px; font-weight:900; color:white; cursor:pointer;
+      box-shadow:var(--shadow); text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
     }
     .primary { background:linear-gradient(180deg,#22c55e,#16a34a); }
     .secondary { background:linear-gradient(180deg,#0ea5e9,#0284c7); }
-    .hidden { display:none !important; }
+    .darkbtn { background:linear-gradient(180deg,#334155,#1e293b); }
+.hidden { display:none !important; }
 
     .item {
-      position:absolute; width:96px; min-height:98px; padding:10px 8px 12px; border-radius:24px;
-      background:linear-gradient(180deg, rgba(255,255,255,.2), rgba(255,255,255,.08));
+      position:absolute; width:96px; min-height:102px; padding:10px 8px 12px; border-radius:24px;
+      background:linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,.08));
       border:1px solid rgba(255,255,255,.16); box-shadow:var(--shadow);
       display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-      transform:translate(-50%, -50%) scale(0.94); animation:pop .18s ease-out forwards;
+      transform:translate(-50%, -50%) scale(.92); animation:itemPop .18s ease-out forwards, drift var(--driftDur) ease-in-out infinite alternate;
+    }
+    @keyframes itemPop { to { transform:translate(-50%, -50%) scale(1); } }
+    @keyframes drift {
+      from { margin-top:-5px; margin-left:-4px; }
+      to { margin-top:5px; margin-left:4px; }
     }
     .item.hit { animation:boom .28s ease-out forwards; }
-    @keyframes pop { to { transform:translate(-50%,-50%) scale(1); } }
     @keyframes boom {
       0% { transform:translate(-50%,-50%) scale(1); opacity:1; }
       60% { transform:translate(-50%,-50%) scale(1.18); opacity:1; }
       100% { transform:translate(-50%,-50%) scale(.2); opacity:0; }
     }
-    .item .emoji { font-size:34px; line-height:1; filter:drop-shadow(0 3px 8px rgba(255,255,255,.16)); }
-    .item .name { font-size:13px; font-weight:800; line-height:1.25; text-align:center; word-break:break-word; }
-    .item .mini { font-size:11px; color:#d7eee8; opacity:.9; }
+    .emoji { font-size:34px; line-height:1; filter:drop-shadow(0 2px 8px rgba(255,255,255,.18)); }
+    .name { font-size:13px; font-weight:900; line-height:1.2; text-align:center; word-break:break-word; }
+    .sub { font-size:11px; color:#dcedea; opacity:.92; }
 
     .crosshair {
-      position:absolute; left:50%; top:68%; width:72px; height:72px; transform:translate(-50%,-50%);
-      border:3px solid rgba(255,255,255,.95); border-radius:50%; z-index:24; pointer-events:none;
-      box-shadow:0 0 0 4px rgba(16,185,129,.22), 0 0 24px rgba(255,255,255,.18);
+      position:absolute; left:50%; top:68%; width:74px; height:74px; transform:translate(-50%,-50%);
+      border:3px solid rgba(255,255,255,.94); border-radius:50%; z-index:24; pointer-events:none;
+      box-shadow:0 0 0 4px rgba(16,185,129,.20), 0 0 20px rgba(255,255,255,.16);
     }
     .crosshair::before,.crosshair::after {
       content:""; position:absolute; left:50%; top:50%; background:white; transform:translate(-50%,-50%);
     }
     .crosshair::before { width:2px; height:86px; }
     .crosshair::after { width:86px; height:2px; }
-    .crosshair .dot {
-      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:10px; height:10px;
-      background:#f8fafc; border-radius:50%; box-shadow:0 0 10px rgba(255,255,255,.55);
-    }
+    .dot { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:10px; height:10px; background:#fff; border-radius:50%; box-shadow:0 0 10px rgba(255,255,255,.55); }
+
     .blast {
-      position:absolute; width:22px; height:22px; border-radius:50%; pointer-events:none;
-      background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,255,255,.6) 20%, rgba(250,204,21,.45) 40%, rgba(250,204,21,0) 72%);
-      transform:translate(-50%, -50%); animation:blast .28s ease-out forwards; z-index:25;
+      position:absolute; width:22px; height:22px; border-radius:50%; pointer-events:none; z-index:25; transform:translate(-50%, -50%);
+      background:radial-gradient(circle, rgba(255,255,255,.96) 0%, rgba(255,255,255,.6) 20%, rgba(250,204,21,.55) 42%, rgba(250,204,21,0) 72%);
+      animation:blast .30s ease-out forwards;
     }
-    @keyframes blast {
-      0% { width:16px; height:16px; opacity:1; }
-      100% { width:150px; height:150px; opacity:0; }
-    }
+    @keyframes blast { 0% { width:16px; height:16px; opacity:1; } 100% { width:150px; height:150px; opacity:0; } }
+
     .toast {
-      position:absolute; left:50%; bottom:140px; transform:translateX(-50%); z-index:40;
-      min-width:180px; max-width:88vw; padding:12px 16px; border-radius:16px;
-      background:rgba(15,23,42,.88); border:1px solid rgba(255,255,255,.12); text-align:center;
-      box-shadow:var(--shadow); opacity:0; pointer-events:none;
+      position:absolute; left:50%; bottom:138px; transform:translateX(-50%); z-index:40;
+      min-width:190px; max-width:88vw; padding:12px 16px; border-radius:16px;
+      background:rgba(15,23,42,.88); border:1px solid rgba(255,255,255,.12); text-align:center; box-shadow:var(--shadow);
+      opacity:0; pointer-events:none;
     }
     .toast.show { animation:toastIn 1.15s ease both; }
     @keyframes toastIn {
-      0% { opacity:0; transform:translateX(-50%) translateY(12px); }
-      10%,75% { opacity:1; transform:translateX(-50%) translateY(0); }
+      0% { opacity:0; transform:translateX(-50%) translateY(10px); }
+      12%,78% { opacity:1; transform:translateX(-50%) translateY(0); }
       100% { opacity:0; transform:translateX(-50%) translateY(-10px); }
     }
 
     .overlay {
-      position:absolute; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:24px;
-      background:rgba(2,6,23,.54); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; padding:20px;
+      background:rgba(2,6,23,.56); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
     }
     .panel {
-      width:min(92vw,520px); padding:24px; text-align:center; border-radius:30px;
+      width:min(92vw,560px); padding:22px; text-align:center; border-radius:30px;
       background:linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.08));
       border:1px solid rgba(255,255,255,.14); box-shadow:var(--shadow);
     }
     .panel h2 { margin:0; font-size:clamp(28px,6vw,40px); line-height:1.05; }
-    .panel p { margin:10px 0 0; color:var(--muted); line-height:1.6; }
-    .panel .hero { font-size:56px; margin-bottom:12px; }
-    .panel .buttons { margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .qrbox {
-      margin:16px auto 0; width:min(280px,70vw); aspect-ratio:1; border-radius:24px; padding:16px;
-      background:white; color:#0f172a; display:grid; place-items:center;
-    }
-    .qr {
-      width:100%; height:100%;
-      background:
-        linear-gradient(90deg,#000 10%,transparent 10%) 0 0/18px 18px,
-        linear-gradient(#000 10%,transparent 10%) 0 0/18px 18px,
-        radial-gradient(circle at 22% 22%, #000 16%, transparent 17%),
-        radial-gradient(circle at 78% 22%, #000 16%, transparent 17%),
-        radial-gradient(circle at 22% 78%, #000 16%, transparent 17%),
-        linear-gradient(45deg,#000 12%,transparent 13%),
-        linear-gradient(-45deg,#000 12%,transparent 13%);
-      border-radius:18px;
-      opacity:.85;
-    }
+    .panel p { margin:10px 0 0; color:var(--muted); line-height:1.55; }
+    .heroicon { font-size:58px; margin-bottom:10px; }
+    .buttons { margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 
-    @media (max-width:700px) {
-      .headline { grid-template-columns:1fr; }
-      .item { width:82px; min-height:88px; border-radius:22px; }
-      .item .emoji { font-size:30px; }
-      .item .name { font-size:12px; }
+    .achievement {
+      margin-top:14px; display:grid; grid-template-columns:repeat(3,1fr); gap:8px;
+    }
+    .achievement .mini {
+      border-radius:18px; padding:10px 8px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    }
+    .achievement .mini .n { font-size:22px; font-weight:900; }
+    .achievement .mini .t { font-size:12px; color:var(--muted); }
+
+    .qrWrap {
+      margin:16px auto 0; display:flex; justify-content:center;
+    }
+    .qrCard {
+      width:min(290px,72vw); padding:14px; border-radius:24px; background:white; color:#0f172a;
+      box-shadow:0 12px 32px rgba(0,0,0,.18);
+    }
+    .qrCard img { width:100%; border-radius:16px; display:block; }
+    .qrCaption { margin-top:8px; font-size:13px; color:#334155; }
+.rankrow:nth-child(odd) { background:rgba(255,255,255,.04); }
+@media (max-width:760px) {
+      .hero { grid-template-columns:1fr; }
+      .missionline { grid-template-columns:1fr; }
+      .descbox { min-height:unset; }
+      .item { width:84px; min-height:90px; border-radius:22px; }
+      .emoji { font-size:30px; }
+      .name { font-size:12px; }
       .crosshair { width:66px; height:66px; }
       .crosshair::before { height:78px; }
       .crosshair::after { width:78px; }
-      .foot { justify-content:center; }
+      .achievement,
+.foot { justify-content:center; }
       .hint { text-align:center; }
     }
   </style>
@@ -190,10 +199,10 @@
     </div>
 
     <div class="topbar">
-      <div class="glass headline">
+      <div class="glass hero">
         <div>
           <div class="title">♻️ 分類炸彈大挑戰</div>
-          <div class="subtitle">瞄準、引爆、正確分類。40 秒內累積 100 分，即可前往 LINE 參加活動。</div>
+          <div class="subtitle">瞄準、引爆、正確分類。40 秒內累積 100 分即可參加活動抽獎。</div>
         </div>
         <div class="scoreboard">
           <div class="metric"><div class="k">剩餘時間</div><div class="v" id="time">40</div></div>
@@ -202,27 +211,25 @@
         </div>
       </div>
 
-      <div class="glass mission">
-        <div>
-          <div class="mission-label">本回合目標</div>
-          <div class="mission-value" id="targetLabel">資源回收</div>
+      <div class="glass missionline">
+        <div class="targetbox">
+          <div class="labelmini">本回合目標</div>
+          <div class="targetvalue" id="targetLabel">資源回收</div>
         </div>
-        <div class="tag" id="targetTag">請找出正確物品</div>
-      </div>
-
-      <div class="glass descbox">
-        <div class="desc-icon" id="descIcon">💡</div>
-        <div>
-          <div class="desc-title">命中物件說明</div>
-          <div class="desc-item" id="descItem">等待命中物件</div>
-          <div class="desc-text desc-placeholder" id="descText">瞄準畫面上的圖卡並引爆，這裡會顯示該物品的正確處理方式與分類小提醒。</div>
+        <div class="labelmini" style="align-self:start; margin-top:4px;">命中物件說明</div>
+        <div class="descbox">
+          <div class="descicon" id="descIcon">💡</div>
+          <div>
+            <div class="descitem" id="descItem">等待命中物件</div>
+            <div class="desctext placeholder" id="descText">瞄準畫面圖卡並引爆，這裡會顯示正確分類與處理提醒。</div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="controls">
       <div class="glass foot">
-        <div class="hint">拖曳準星後點擊畫面即可引爆。答對 +10 分，答錯不加分。</div>
+        <div class="hint">拖曳準星後點擊物件即可引爆。答對 +10 分，答錯不加分。</div>
         <div class="btns">
           <button class="secondary" id="restartBtn">重新開始</button>
           <button class="primary" id="startBtn">開始遊戲</button>
@@ -232,9 +239,9 @@
 
     <div class="overlay" id="startOverlay">
       <div class="panel">
-        <div class="hero">🌱</div>
+        <div class="heroicon">🌿</div>
         <h2>準備開始</h2>
-        <p>請依照畫面指定的分類目標，瞄準對應物品並引爆。<br>40 秒內達到 100 分即可參加活動。</p>
+        <p>依照畫面指定的分類目標，瞄準對應物品並引爆。<br>40 秒內達到 100 分，即可參加活動抽獎。</p>
         <div class="buttons">
           <button class="primary" id="overlayStart">開始挑戰</button>
         </div>
@@ -243,326 +250,305 @@
 
     <div class="overlay hidden" id="endOverlay">
       <div class="panel">
-        <div class="hero" id="endHero">🎉</div>
+        <div class="heroicon" id="endHero">🎉</div>
         <h2 id="endTitle">挑戰完成</h2>
         <p id="endText"></p>
-        <div class="qrbox hidden" id="qrBox"><div class="qr"></div></div>
+
+        <div class="achievement">
+          <div class="mini"><div class="n" id="endScore">0</div><div class="t">本次得分</div></div>
+          <div class="mini"><div class="n">100</div><div class="t">達標門檻</div></div>
+        </div>
+
+        <div class="qrWrap hidden" id="qrWrap">
+          <div class="qrCard">
+            <img id="qrImage" alt="LINE QR Code" />
+            <div class="qrCaption">掃描 QR Code 或點擊下方按鈕前往 LINE 完成活動參加。</div>
+          </div>
+        </div>
+
         <div class="buttons">
           <button class="secondary" id="playAgain">再玩一次</button>
-          <button class="primary hidden" id="lineBtn">前往 LINE</button>
+          <button class="primary hidden" id="lineBtn">前往 LINE 參加抽獎</button>
         </div>
       </div>
     </div>
+
   </div>
 
 <script>
-const DATASET = [{"物品名稱": "奶粉鐵罐", "大類": "資源回收", "文字說明": "請排空內容物，粉類需加水以廚餘回收，洗淨後交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器"}, {"物品名稱": "奶粉罐", "大類": "資源回收", "文字說明": "請排空內容物，粉類需加水以廚餘回收，洗淨後交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器"}, {"物品名稱": "油漆桶罐", "大類": "資源回收", "文字說明": "將剩餘油漆以報紙或破布吸乾，吸飽油漆的材料丟入一般垃圾，油漆桶則清洗後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器"}, {"物品名稱": "易開罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器"}, {"物品名稱": "飲料鋁罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器"}, {"物品名稱": "飲料罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器"}, {"物品名稱": "卡式爐瓦斯罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器"}, {"物品名稱": "高壓瓶罐(家用)", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器"}, {"物品名稱": "殺蟲劑罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器"}, {"物品名稱": "髮膠噴罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器"}, {"物品名稱": "不鏽鋼保溫瓶", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若為複合性材質，則屬一般垃圾。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "不鏽鋼保溫杯", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若為複合性材質，則屬一般垃圾。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "不沾鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "不銹鋼保鮮盒", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "不銹鋼鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "不鏽鋼密漏勺", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "平底鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "卡式爐", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品"}, {"物品名稱": "腳踏車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "自行車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "助行器", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "輔具", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "寵物籠", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "鐵籠", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "防潮箱", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "金爐", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "金桶", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "手推車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "洗手台", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "水槽", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "床架", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "鐵櫃", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)"}, {"物品名稱": "果醬罐", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "奶瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "保鮮盒", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "玻璃容器", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "香水瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "酒瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "橄欖油罐", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器"}, {"物品名稱": "鋁箔包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "牛奶盒", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "紙容器", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "飲料紙杯", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "紙杯", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "飲料紙盒包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "飲料包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "紙餐具", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "泡麵紙碗", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "便當紙盒", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "紙製速食容器", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "紙製免洗餐具", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器"}, {"物品名稱": "一般紙提袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "紙袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "香菸紙盒", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "菸盒", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "書籍", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "書本", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "書", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "紙箱", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "報紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "筆記書紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "筆記本", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "電腦紙報表", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "電話簿", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "購物紙袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "雜誌", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "月曆", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "日曆", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "瓦楞紙箱", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "再生紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類"}, {"物品名稱": "乳液瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "沐浴乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "洗髮精", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "洗髮乳", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "洗髮霜瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "護髮乳", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "護髮霜瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "潤髮乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "染髮劑瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "燙髮劑瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "化粧水瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "防曬乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "透明瓶桶罐", "大類": "資源回收", "文字說明": "先清除瓶身塑膠或其他材質標籤後排空內容物並沖洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "牙膏軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "洗面乳軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "卸妝乳軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "PE軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "化妝油瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "面霜乳液瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "乳霜瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "凝膠瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "剃鬍膏瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "保麗龍杯", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "保麗龍泡麵碗", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "保麗龍生鮮托盤", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器"}, {"物品名稱": "乾電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "筒型鹼錳電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "鈕釦型電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "錳鋅電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "鎳氫電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "鎳鎘電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "鹼性電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "碳鋅電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池"}, {"物品名稱": "充電電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "鈕釦型鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "行動電源", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "行充", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "二次鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "充電式鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池"}, {"物品名稱": "鉛蓄電池", "大類": "資源回收", "文字說明": "家戶排出之廢鉛蓄電池可交由執行機關之資源回收車回收，家戶以外所產生者，請依執行機關指定方式回收，或交由廢鉛蓄電池回收商進行回收。", "廢棄物所屬分類": "鉛蓄電池"}, {"物品名稱": "小燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "日光燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "水銀燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "白熾燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。【燈帽直徑為2.6公分以上】", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "直管日光燈", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "廢螺旋燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "廢U型燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "環管日光燈", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "省電燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "LED燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "LED燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "傳統直管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源"}, {"物品名稱": "電腦喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "無線耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "藍芽耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "傳真機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "路由器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電視盒子", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "監視器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "桌上型複合事務影印機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若體積較大，請電洽當地清潔隊預約付費清運。使用完畢之碳粉匣則由生產或經銷廠商逆向回收為主。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "桌上型複合事務印表機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若體積較大，請電洽當地清潔隊預約付費清運。使用完畢之碳粉匣則由生產或經銷廠商逆向回收為主。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "螢幕", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "顯示器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "鍵盤", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "隨身碟", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "USB", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "3C手錶", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "硬式磁碟機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電源器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦機殼", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "GoPro", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "MP3播放器", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "隨身聽", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "主機板", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "延長線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若線體較長，請裝袋或綑綁好交付回收車", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若線體較長，請裝袋或綑綁好交付回收車", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "掃描器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "掃描機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電話機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦介面卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦網路卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦顯示卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦音效卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "電腦記憶體", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "手寫筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "觸控筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "逗貓激光筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "光筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "滑鼠", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "筆記型電腦", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。回收前依電腦品牌業者建議之刪除個資方式刪除個人資料。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "平板電腦", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。回收前依品牌業者建議之刪除個資方式刪除個人資料。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "藍芽喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "充電式喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品"}, {"物品名稱": "洗衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "烘乾機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "烘衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "乾衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "烘被機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "脫水機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "電冰箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "冷凍箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "冷藏箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "電視機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "電視", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "冷氣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "暖氣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)"}, {"物品名稱": "CD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片"}, {"物品名稱": "DVD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片"}, {"物品名稱": "VCD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片"}, {"物品名稱": "智慧型手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "3C手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "行動電話", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "充電器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "旅充", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "座充", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "充電線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "傳輸線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)"}, {"物品名稱": "廢腳踏車輪胎", "大類": "資源回收", "文字說明": "民眾自行汰換之廢機車輪胎或自行車輪胎(限家戶)，詳細回收方式及數量將依各鄉鎮市清潔隊規定辦理，請電洽各鄉鎮市清潔隊。內胎及實心胎不可回收。家戶以外請找合格之清運公司協助清運。", "廢棄物所屬分類": "輪胎"}, {"物品名稱": "廢機車輪胎", "大類": "資源回收", "文字說明": "民眾自行汰換之廢機車輪胎或自行車輪胎(限家戶)，詳細回收方式及數量將依各鄉鎮市清潔隊規定辦理，請電洽各鄉鎮市清潔隊。內胎及實心胎不可回收。家戶以外請找合格之清運公司協助清運。", "廢棄物所屬分類": "輪胎"}, {"物品名稱": "環境消毒藥空瓶", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器"}, {"物品名稱": "塑膠製農藥容器", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器"}, {"物品名稱": "水蒸式滅蹣滅蟑劑", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器"}, {"物品名稱": "水煙式殺蟲劑", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器"}, {"物品名稱": "回鍋油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "食用油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "沙拉油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "大豆油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "橄欖油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "葡萄籽油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "葵花油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油"}, {"物品名稱": "廢潤滑油", "大類": "資源回收", "文字說明": "建議優先攜至鄰近機車行、汽車維修業或加油站回收。廢潤滑油回收點相關資訊：環境部資源循環署資源回收網查詢（https://recycle.moenv.gov.tw/Services/QA ；資源回收網>資訊與服務>常見問答>類型：非公告項目）", "廢棄物所屬分類": "廢潤滑油(廢機油)"}, {"物品名稱": "機油", "大類": "資源回收", "文字說明": "建議優先攜至鄰近機車行、汽車維修業或加油站回收。廢潤滑油回收點相關資訊：環境部資源循環署資源回收網查詢（https://recycle.moenv.gov.tw/Services/QA ；資源回收網>資訊與服務>常見問答>類型：非公告項目）", "廢棄物所屬分類": "廢潤滑油(廢機油)"}, {"物品名稱": "電動機車(掛牌)", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛"}, {"物品名稱": "汽車", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛"}, {"物品名稱": "燃油機車", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛"}, {"物品名稱": "植物種子", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "蔬菜菜籽", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "軟殼類(蝦殼)", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "蘋果皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "水果", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "中藥渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "香蕉皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "茶渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "咖啡渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "蛋殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "軟質果皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "生菜葉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "生菜心", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "瓜子殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "花生殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "菱角殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "花材", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "樹葉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "草本植物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "根莖葉蔬菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "葉菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "花菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "地瓜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "廚餘機產物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "奶粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "麵粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "番薯粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "粉末狀可食品", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "調味品", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "調味料", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "調味粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "罐頭食品內容物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "豆腐", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "豆花", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "豆渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "豆製品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "果醬", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "零食餅乾", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "糖果", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "巧克力", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "熟食類廚餘", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "烹煮熟肉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "豬油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "牛油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "雞油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "動物油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "米糧", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "白飯", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "麥片", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "麵條", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "麵包", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "麵粉製品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "堅果果仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "核桃仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "瓜子仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "動物飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "鳥禽飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "貓飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "魚飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "剩菜剩飯", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "過期食品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "發霉食品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘"}, {"物品名稱": "名片", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "便利貼", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "便條紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "EPE泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "EPE緩衝包材", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "髒保麗龍", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "保麗龍粒", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泡粒", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "懶骨頭填充發泡球", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "EPE珍珠棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "舒服多", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "舒美袋(布)", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "水果網袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "水果泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "原子筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "自動鉛筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "彩色筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "奇異筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "麥克筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "白板筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "螢光筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "輕便雨衣", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠瓦楞板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠珍珠板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "錄音帶外殼卡匣", "大類": "一般垃圾", "文字說明": "先分開塑膠殼與磁帶，塑膠殼可回收，黑色磁帶交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "PVC軟水管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "攜帶式保冷箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "釣魚冰箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "行動冰桶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "萬能網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "萬用網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "萬年網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠壓條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "PVC塑膠壓條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠文件夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "L夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "U型夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "資料夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "檔案夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "透明夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "易見夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠PP編織米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "兒童彩球", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "彩色塑膠球", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "PE塑膠水管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泡麵綜合包外層袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "洗衣店套袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "蔬果包裝袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "生鮮托盤", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "壓克力板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "竹蓆椅墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "草蓆椅墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "竹蓆床墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "草蓆床墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "安全帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "工地安全帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "木片便當盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。木製品再生困難，無法回收再利用。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "止滑墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "毛巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "毛線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "牙籤", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "包裝用蝴蝶結", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "樹脂", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "安全座椅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "墊子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠製印台", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "飼料袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠玩具", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠鉛筆盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "玻璃纖維FRP物品", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "化學纖維物品", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "可伸縮矽膠餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "摺疊矽膠餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "奶嘴", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "尼龍繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "口香糖包裝紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "巧克力矽膠模具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "布條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "甘蔗纖維吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "白板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "皮帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "鞋子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。可捐贈給社福機構或團體；或使用循環署建置的【全國不用品藏寶地圖】為二手物找新家。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "球類", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "地毯", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "百葉窗", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "小星砂", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "食品袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "食品米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "布米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "點滴袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如裝有危害性藥品:如抗生素、荷爾蒙(含類固醇、甲狀腺素)抗癌＆免疫制劑、管制藥、針具針頭可能造成環境汙染或濫用，建議送原處方院所由專業人員處理。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "內衣褲", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "化妝包", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "手套", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "手推車輪胎", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "耳罩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "刷子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "呼叫器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "底片", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "底片捲", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "抱枕", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "抹布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "板擦", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "枕套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "枕頭套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "枕頭", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泳裝", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泳褲", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "泳衣", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "自動鉛筆筆芯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠手機殼", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠手環", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠耳塞", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠折疊杯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠杯蓋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠食物容器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠摺疊保鮮盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠造型模具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "行裏箱矽膠吊牌", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "曬衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "晾衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "吸油面紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "床單", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "防水浴帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠鞋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "洗衣精補充包", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "相片紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "眉筆", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "砂紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "美耐皿餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "耐熱矽膠刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "食物袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "食品包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "餅乾袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "鋁箔紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "修正液瓶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "立可白瓶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠錶帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "原子筆筆芯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "旅行袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "帆布袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "軟殼布面旅行箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "軟殼布面行李箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "書套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "桌布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "桌墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "浴巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "浴簾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "木質砧板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "橡膠砧板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠鍋鏟", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "破損衣服", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "粉底液", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠攪拌刮刀", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "保鮮膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "信用卡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "按摩梳", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "洋芋片包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "乖乖包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "康寶濃湯包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "木頭洗衣板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "粉餅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "掃把頭", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "拖把頭", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "竹柄掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "木柄掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "竹柄拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "木柄拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠柄浴室刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠柄地板刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠柄玻璃刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "眼影", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "眼鏡盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "組合式地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "PU巧拼地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "兒童塑膠地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "軟布類鉛筆盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "圍巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "圍裙", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "帽子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "提款機列印單", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "棉被", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "棉被套袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "棉線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "窗簾", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "童軍繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "絲襪", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "貼紙底襯", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠光面廢紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "感熱紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "紙尿片", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "紙尿布", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "紙尿褲", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "紙本電子發票", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "傳真用圖紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "心電圖紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "標籤貼紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "熱感應紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "衛生紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "衛生棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。複合材質紙類，可回收的再利用比例低且影響再生產品品質。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "複寫紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "蠟紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "離心紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "轉印紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "相框", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "桌巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "茶葉包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "蚊香", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "黑膠唱片", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "悠遊卡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "捲尺", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "布尺", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "塑膠繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "腳踏墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "過期藥丸", "大類": "一般垃圾", "文字說明": "可居家自行處理之藥物為處方藥、指示用藥與成藥、動物用藥、維他命、軟膏/乳劑、噴霧吸入劑、液體藥劑、藥丸鋁箔包装、空罐子。請集中剩餘藥丸及藥水，混和茶葉渣、咖啡渣或擦手紙，密封包裝後，交付鄉鎮市清潔隊垃圾車。麻醉/管制藥品、IV袋、含血或感染廢棄物、注射器/針頭、癌症類藥物需回原開立醫院處置。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "座墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "睡衣", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "磁扣", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "網路線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "矽膠鍵盤保護膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "撥水矽膠雨刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "緞帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "膠帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "複合材質塑膠袋", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "髒污塑膠袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "滑鼠墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "汽機車坐墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "瑜珈墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "睫毛膏", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "碎布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "免洗竹筷子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "腮紅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "腰帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "選舉旗幟", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "錄音帶內帶", "大類": "一般垃圾", "文字說明": "先分開塑膠殼與磁帶，塑膠殼可回收，黑色磁帶交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "嬰幼兒坐便器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "環保拋棄式馬桶座墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "環保矽膠耐冷耐熱食物保鮮密封袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "縫針", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "隱形眼鏡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "擴音器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "大聲公", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "濾水濾心", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "淨水器濾心", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "橡皮筋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "寵物項圈", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "鏡子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "扇子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "襪子", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "護貝紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}, {"物品名稱": "護貝膠膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾"}];
 const LINE_URL = "https://line.me/R/ti/p/@yourlineid";
+const QR_URL = "https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=" + encodeURIComponent(LINE_URL);
+const DATASET = [{"物品名稱": "奶粉鐵罐", "大類": "資源回收", "文字說明": "請排空內容物，粉類需加水以廚餘回收，洗淨後交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器", "類別": "鐵容器01-01"}, {"物品名稱": "奶粉罐", "大類": "資源回收", "文字說明": "請排空內容物，粉類需加水以廚餘回收，洗淨後交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器", "類別": "鐵容器01-01"}, {"物品名稱": "油漆桶罐", "大類": "資源回收", "文字說明": "將剩餘油漆以報紙或破布吸乾，吸飽油漆的材料丟入一般垃圾，油漆桶則清洗後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鐵容器", "類別": "鐵容器01-01"}, {"物品名稱": "易開罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器", "類別": "鋁容器01-02"}, {"物品名稱": "飲料鋁罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器", "類別": "鋁容器01-02"}, {"物品名稱": "飲料罐", "大類": "資源回收", "文字說明": "請排空內容物並洗淨，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "鋁容器", "類別": "鋁容器01-02"}, {"物品名稱": "卡式爐瓦斯罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器", "類別": "高壓容器01-03"}, {"物品名稱": "高壓瓶罐(家用)", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器", "類別": "高壓容器01-03"}, {"物品名稱": "殺蟲劑罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器", "類別": "高壓容器01-03"}, {"物品名稱": "髮膠噴罐", "大類": "資源回收", "文字說明": "千萬不能丟入垃圾車，避免起火、爆炸，遇到高溫或壓縮易引爆，請至空曠處將內容物排出，確認用完(完)，獨立打包(包)，加註內有高壓瓶警語(警)、交資收車(收)，單獨交付鄉鎮市清潔隊回收車。經壓縮恐有爆炸之虞，請勿丟入垃圾車！", "廢棄物所屬分類": "高壓容器", "類別": "高壓容器01-03"}, {"物品名稱": "不鏽鋼保溫瓶", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若為複合性材質，則屬一般垃圾。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "不鏽鋼保溫杯", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若為複合性材質，則屬一般垃圾。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "不沾鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "不銹鋼保鮮盒", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "不銹鋼鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "不鏽鋼密漏勺", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "平底鍋", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "卡式爐", "大類": "資源回收", "文字說明": "請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "其他金屬製品", "類別": "其他金屬製品02-01"}, {"物品名稱": "腳踏車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "自行車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "助行器", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "輔具", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "寵物籠", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "鐵籠", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "防潮箱", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "金爐", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "金桶", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "手推車", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "洗手台", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "水槽", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "床架", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "鐵櫃", "大類": "資源回收", "文字說明": "請電洽鄉鎮市清潔隊預約付費清運，或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "其他金屬製品(巨大金屬)", "類別": "其他金屬製品(巨大金屬)02-02"}, {"物品名稱": "果醬罐", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "奶瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "保鮮盒", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "玻璃容器", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "香水瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "酒瓶", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "橄欖油罐", "大類": "資源回收", "文字說明": "去掉瓶蓋、倒空內容物、用水略為沖洗，分色（透明、綠色、褐色）回收，如有破損請以報紙包裹，單獨交付鄉鎮市清潔隊回收車。請勿丟入垃圾車，避免造成噴濺危險！", "廢棄物所屬分類": "玻璃容器", "類別": "玻璃容器03-01"}, {"物品名稱": "鋁箔包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "牛奶盒", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "紙容器", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "飲料紙杯", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "紙杯", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "飲料紙盒包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "飲料包", "大類": "資源回收", "文字說明": "將吸管取出，排空內容物，用水略為沖洗，壓扁後包成一袋，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "紙餐具", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "泡麵紙碗", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "便當紙盒", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "紙製速食容器", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "紙製免洗餐具", "大類": "資源回收", "文字說明": "清除菜渣簡易擦拭或沖洗(清)，分類回收(分)，堆疊於回收設施(疊)，並且與紙類分開回收，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙容器", "類別": "紙容器05-01"}, {"物品名稱": "一般紙提袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "紙袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "香菸紙盒", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "菸盒", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "書籍", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "書本", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "書", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "紙箱", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "報紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "筆記書紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "筆記本", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "電腦紙報表", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "電話簿", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "購物紙袋", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "雜誌", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "月曆", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "日曆", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "瓦楞紙箱", "大類": "資源回收", "文字說明": "先行移除膠帶等非屬紙類物品，並拆開壓扁減積後，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "再生紙", "大類": "資源回收", "文字說明": "先行除去塑膠封面、膠帶、線圈，釘書針等非屬紙類物品，裝箱或打包成捆，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "紙類", "類別": "紙類06-01"}, {"物品名稱": "乳液瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "沐浴乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "洗髮精", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "洗髮乳", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "洗髮霜瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "護髮乳", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "護髮霜瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "潤髮乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "染髮劑瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "燙髮劑瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "化粧水瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "防曬乳瓶", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "透明瓶桶罐", "大類": "資源回收", "文字說明": "先清除瓶身塑膠或其他材質標籤後排空內容物並沖洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "牙膏軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "洗面乳軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "卸妝乳軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "PE軟管", "大類": "資源回收", "文字說明": "排空內容物清除瓶身塑膠或其他材質標籤，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "化妝油瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "面霜乳液瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "乳霜瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "凝膠瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "剃鬍膏瓶罐", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "保麗龍杯", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "保麗龍泡麵碗", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "保麗龍生鮮托盤", "大類": "資源回收", "文字說明": "先排空內容物，用水略為清洗，交付鄉鎮市清潔隊回收車。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "塑膠容器", "類別": "塑膠容器07-01"}, {"物品名稱": "乾電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "筒型鹼錳電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "鈕釦型電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "錳鋅電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "鎳氫電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "鎳鎘電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "鹼性電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "碳鋅電池", "大類": "資源回收", "文字說明": "廢乾電池自物品取出後單獨儲存於塑膠容器避免漏液導電，並與鋰電池分開回收，交由清潔隊資源回收車回收或交由連鎖超商、超市、量販店、通訊器材行、攝影器材行等販賣業者逆向回收。", "廢棄物所屬分類": "乾電池", "類別": "乾電池10-01"}, {"物品名稱": "充電電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "鈕釦型鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "行動電源", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "行充", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "二次鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "充電式鋰電池", "大類": "資源回收", "文字說明": "千萬不可丟入垃圾車或併同電器回收，避免起火爆炸，注意3要3避原則，即「要絕緣」、「要分類」、「要放電」、「避高溫」、「避擠壓」、「避水氣」，回收前應於正負極上貼絕緣膠帶避免短路，與乾電池分開回收，交由連鎖超商、量販店、鄉鎮市清潔隊回收車等管道回收。", "廢棄物所屬分類": "鋰電池", "類別": "鋰電池10-02"}, {"物品名稱": "鉛蓄電池", "大類": "資源回收", "文字說明": "家戶排出之廢鉛蓄電池可交由執行機關之資源回收車回收，家戶以外所產生者，請依執行機關指定方式回收，或交由廢鉛蓄電池回收商進行回收。", "廢棄物所屬分類": "鉛蓄電池", "類別": "鉛蓄電池11-01"}, {"物品名稱": "小燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "日光燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "水銀燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "白熾燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。【燈帽直徑為2.6公分以上】", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "直管日光燈", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "廢螺旋燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "廢U型燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "環管日光燈", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "省電燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "LED燈泡", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "LED燈管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "傳統直管", "大類": "資源回收", "文字說明": "先用原包裝紙套裝好，避免打破，單獨交資源回收車或照明光源販賣業者回收。如不小心破損，以堅固容器妥善包裝，並註明內容物。", "廢棄物所屬分類": "照明光源", "類別": "照明光源12-01"}, {"物品名稱": "電腦喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "無線耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "藍芽耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "傳真機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "路由器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電視盒子", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "監視器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "桌上型複合事務影印機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若體積較大，請電洽當地清潔隊預約付費清運。使用完畢之碳粉匣則由生產或經銷廠商逆向回收為主。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "桌上型複合事務印表機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若體積較大，請電洽當地清潔隊預約付費清運。使用完畢之碳粉匣則由生產或經銷廠商逆向回收為主。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "螢幕", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "顯示器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "鍵盤", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "隨身碟", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "USB", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "3C手錶", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "硬式磁碟機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電源器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦機殼", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "GoPro", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "MP3播放器", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "隨身聽", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "主機板", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "延長線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若線體較長，請裝袋或綑綁好交付回收車", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。若線體較長，請裝袋或綑綁好交付回收車", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "掃描器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "掃描機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電話機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦介面卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦網路卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦顯示卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦音效卡", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "電腦記憶體", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "耳機", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "手寫筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "觸控筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "逗貓激光筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "光筆", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "滑鼠", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "筆記型電腦", "大類": "資源回收", "文字說明": "請勿自行拆解，若物品內含電池，應事先拆除內部電池獨立回收，再交付鄉鎮市清潔隊回收車。回收前依電腦品牌業者建議之刪除個資方式刪除個人資料。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "平板電腦", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。回收前依品牌業者建議之刪除個資方式刪除個人資料。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "藍芽喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "充電式喇叭", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "資訊物品", "類別": "資訊物品13-01"}, {"物品名稱": "洗衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "烘乾機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "烘衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "乾衣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "烘被機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "脫水機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；或至資源回收網搜尋合格回收商。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "電冰箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "冷凍箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "冷藏箱", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "電視機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "電視", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "冷氣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "暖氣機", "大類": "資源回收", "文字說明": "勿自行拆解，請電洽鄉鎮市清潔隊預約付費清運，張貼「預約日期、地址及已預約清潔隊」字樣，於預約時間前自行搬至屋外(不得影響交通)，等待清潔隊清運；且屬廢四機（四機：電視機、洗衣機、電冰箱及冷暖氣機），購買新機(相同品項及數量)時，可以請販賣業者免費協助回收舊機。", "廢棄物所屬分類": "家電(大型家電)", "類別": "家電(大型家電)14-01"}, {"物品名稱": "CD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片", "類別": "廢光碟片16-01"}, {"物品名稱": "DVD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片", "類別": "廢光碟片16-01"}, {"物品名稱": "VCD光碟片", "大類": "資源回收", "文字說明": "卸除外包裝（如棉套或塑膠盒）後裝袋，交付鄉鎮市清潔隊回收車。光碟片含有重金屬，不可混入一般垃圾中。", "廢棄物所屬分類": "廢光碟片", "類別": "廢光碟片16-01"}, {"物品名稱": "智慧型手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "3C手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "行動電話", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "手機", "大類": "資源回收", "文字說明": "依手機品牌業者建議之刪除個資方式刪除個人資料，並卸除電池、記憶卡與sim卡後，單獨交付鄉鎮市清潔隊回收車或通訊行回收。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "充電器", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "旅充", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "座充", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "充電線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "傳輸線", "大類": "資源回收", "文字說明": "請勿自行拆解，請落實資源回收分類作業，交付鄉鎮市清潔隊回收車。", "廢棄物所屬分類": "行動電話(含充電器)", "類別": "行動電話(含充電器)15-01"}, {"物品名稱": "廢腳踏車輪胎", "大類": "資源回收", "文字說明": "民眾自行汰換之廢機車輪胎或自行車輪胎(限家戶)，詳細回收方式及數量將依各鄉鎮市清潔隊規定辦理，請電洽各鄉鎮市清潔隊。內胎及實心胎不可回收。家戶以外請找合格之清運公司協助清運。", "廢棄物所屬分類": "輪胎", "類別": "輪胎17-01"}, {"物品名稱": "廢機車輪胎", "大類": "資源回收", "文字說明": "民眾自行汰換之廢機車輪胎或自行車輪胎(限家戶)，詳細回收方式及數量將依各鄉鎮市清潔隊規定辦理，請電洽各鄉鎮市清潔隊。內胎及實心胎不可回收。家戶以外請找合格之清運公司協助清運。", "廢棄物所屬分類": "輪胎", "類別": "輪胎17-01"}, {"物品名稱": "環境消毒藥空瓶", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器", "類別": "廢農藥容器18-01"}, {"物品名稱": "塑膠製農藥容器", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器", "類別": "廢農藥容器18-01"}, {"物品名稱": "水蒸式滅蹣滅蟑劑", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器", "類別": "廢農藥容器18-01"}, {"物品名稱": "水煙式殺蟲劑", "大類": "資源回收", "文字說明": "裝填環境衛生用藥（含一般環境用藥及特殊環境用藥）、農藥、肥料之容器，至少反覆清洗三次，並將清洗液重複噴灑利用，清除內容物後並打包成一袋，送交農會所設置之回收點或交清潔隊資源回收車單獨回收。", "廢棄物所屬分類": "廢農藥容器", "類別": "廢農藥容器18-01"}, {"物品名稱": "回鍋油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "食用油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "沙拉油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "大豆油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "橄欖油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "葡萄籽油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "葵花油", "大類": "資源回收", "文字說明": "一般家戶應將廢棄食用油裝入瓶中，並在瓶身標示「廢食用油」，交付鄉鎮市清潔隊回收車回收。攤商及事業單位應委託已取得「廢食用油回收工作證」之合格清除業者回收，並簽訂契約。詳細收運情形請洽當地清潔隊。", "廢棄物所屬分類": "廢食用油", "類別": "廢食用油19-01"}, {"物品名稱": "廢潤滑油", "大類": "資源回收", "文字說明": "建議優先攜至鄰近機車行、汽車維修業或加油站回收。廢潤滑油回收點相關資訊：環境部資源循環署資源回收網查詢（https://recycle.moenv.gov.tw/Services/QA ；資源回收網>資訊與服務>常見問答>類型：非公告項目）", "廢棄物所屬分類": "廢潤滑油(廢機油)", "類別": "廢潤滑油(廢機油)21-01"}, {"物品名稱": "機油", "大類": "資源回收", "文字說明": "建議優先攜至鄰近機車行、汽車維修業或加油站回收。廢潤滑油回收點相關資訊：環境部資源循環署資源回收網查詢（https://recycle.moenv.gov.tw/Services/QA ；資源回收網>資訊與服務>常見問答>類型：非公告項目）", "廢棄物所屬分類": "廢潤滑油(廢機油)", "類別": "廢潤滑油(廢機油)21-01"}, {"物品名稱": "電動機車(掛牌)", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛", "類別": "廢機動車輛22-01"}, {"物品名稱": "汽車", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛", "類別": "廢機動車輛22-01"}, {"物品名稱": "燃油機車", "大類": "資源回收", "文字說明": "民眾回收廢車，可透過「廢車回收一站通」平台，申辦車體回收及車牌報廢，並可於該平台下載報廢回收證明聯單。亦可經由應回收廢棄物回收業者協助回收。車輛已完成回收及報廢，汽車車齡達10年以上（含），機車車齡達7年以上（含），可申請廢車回收獎勵金。", "廢棄物所屬分類": "廢機動車輛", "類別": "廢機動車輛22-01"}, {"物品名稱": "植物種子", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "蔬菜菜籽", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "軟殼類(蝦殼)", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "蘋果皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "水果", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "中藥渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "香蕉皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "茶渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "咖啡渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "蛋殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "軟質果皮", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "生菜葉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "生菜心", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "瓜子殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "花生殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "菱角殼", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "花材", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "樹葉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "草本植物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "根莖葉蔬菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。不含樹幹、樹枝、砂石等。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "葉菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "花菜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "地瓜", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "廚餘機產物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "奶粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "麵粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "番薯粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "粉末狀可食品", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "調味品", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "調味料", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "調味粉", "大類": "廚餘", "文字說明": "將粉狀物集中，加水混成泥狀，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "罐頭食品內容物", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "豆腐", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "豆花", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "豆渣", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "豆製品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "果醬", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "零食餅乾", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "糖果", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "巧克力", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "熟食類廚餘", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "烹煮熟肉", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。魚骨、蟹殼、貝殼(蛤殼、牡蠣殼)、大骨、硬質果皮心(榴槤皮、椰子殼、鳳梨頭、果核)、長纖維類(玉米外葉皮、竹筍殼、粽葉)等請倒入一般垃圾。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "豬油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "牛油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "雞油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "動物油", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "米糧", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "白飯", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "麥片", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "麵條", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "麵包", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "麵粉製品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "堅果果仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "核桃仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "瓜子仁", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "動物飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "鳥禽飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "貓飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "魚飼料", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "剩菜剩飯", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "過期食品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "發霉食品", "大類": "廚餘", "文字說明": "應先瀝乾水分後回收，塑膠袋勿丟入廚餘桶，並倒入鄉鎮市清潔隊垃圾車廚餘桶。", "廢棄物所屬分類": "廚餘", "類別": "廚餘23-01"}, {"物品名稱": "名片", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "便利貼", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "便條紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "EPE泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "EPE緩衝包材", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "髒保麗龍", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "保麗龍粒", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泡粒", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "懶骨頭填充發泡球", "大類": "一般垃圾", "文字說明": "沾有泥土、青苔、油垢，應先清洗後回收，如無法清洗完全，則屬一般垃圾。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，請電洽各鄉鎮市清潔隊。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "EPE珍珠棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "舒服多", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "舒美袋(布)", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "水果網袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "水果泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "原子筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "自動鉛筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "彩色筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "奇異筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "麥克筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "白板筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "螢光筆塑膠筆桿", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "輕便雨衣", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠瓦楞板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠珍珠板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "錄音帶外殼卡匣", "大類": "一般垃圾", "文字說明": "先分開塑膠殼與磁帶，塑膠殼可回收，黑色磁帶交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "PVC軟水管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "攜帶式保冷箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "釣魚冰箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "行動冰桶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "萬能網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "萬用網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "萬年網", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠壓條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "PVC塑膠壓條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠文件夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "L夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "U型夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "資料夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "檔案夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "透明夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "易見夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠PP編織米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "兒童彩球", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "彩色塑膠球", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "PE塑膠水管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泡麵綜合包外層袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "洗衣店套袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "蔬果包裝袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "生鮮托盤", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "壓克力板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "竹蓆椅墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "草蓆椅墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "竹蓆床墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "草蓆床墊", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "安全帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "工地安全帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "木片便當盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。木製品再生困難，無法回收再利用。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "止滑墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "毛巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "毛線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "牙籤", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "包裝用蝴蝶結", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "樹脂", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "安全座椅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "墊子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠製印台", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "飼料袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠玩具", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠鉛筆盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "玻璃纖維FRP物品", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "化學纖維物品", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "可伸縮矽膠餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "摺疊矽膠餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "奶嘴", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "尼龍繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "口香糖包裝紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "巧克力矽膠模具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "布條", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "甘蔗纖維吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "白板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "皮帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "鞋子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。可捐贈給社福機構或團體；或使用循環署建置的【全國不用品藏寶地圖】為二手物找新家。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "球類", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "地毯", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "百葉窗", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "小星砂", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "食品袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "食品米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "布米袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "點滴袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如裝有危害性藥品:如抗生素、荷爾蒙(含類固醇、甲狀腺素)抗癌＆免疫制劑、管制藥、針具針頭可能造成環境汙染或濫用，建議送原處方院所由專業人員處理。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "內衣褲", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "化妝包", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "手套", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "手推車輪胎", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "耳罩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "刷子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "呼叫器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "底片", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "底片捲", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "抱枕", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "抹布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "板擦", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "枕套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "枕頭套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "枕頭", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泡棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泳裝", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泳褲", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "泳衣", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "自動鉛筆筆芯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠手機殼", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠手環", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠耳塞", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠折疊杯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠杯蓋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠食物容器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠摺疊保鮮盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠造型模具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "行裏箱矽膠吊牌", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "曬衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "晾衣夾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。如為複合式材質（兩種以上材質），為不可回收物品。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "吸油面紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "吸管", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "床單", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "防水浴帽", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠鞋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "洗衣精補充包", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "相片紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "眉筆", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "砂紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "美耐皿餐具", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "耐熱矽膠刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "食物袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "食品包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "餅乾袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "鋁箔紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "修正液瓶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "立可白瓶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠錶帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "原子筆筆芯", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "旅行袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "帆布袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "軟殼布面旅行箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "軟殼布面行李箱", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "書套", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "桌布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "桌墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "浴巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "浴簾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "木質砧板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "橡膠砧板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠鍋鏟", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "破損衣服", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "粉底液", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠攪拌刮刀", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "保鮮膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "信用卡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "按摩梳", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "洋芋片包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "乖乖包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "康寶濃湯包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "木頭洗衣板", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "粉餅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "掃把頭", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "拖把頭", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "竹柄掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "木柄掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠掃把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "竹柄拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "木柄拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠拖把", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠柄浴室刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠柄地板刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠柄玻璃刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "眼影", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "眼鏡盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "組合式地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "PU巧拼地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "兒童塑膠地墊", "大類": "一般垃圾", "文字說明": "先將電池取出回收，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "軟布類鉛筆盒", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "圍巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "圍裙", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "帽子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "提款機列印單", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "棉被", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "棉被套袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "棉線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "窗簾", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "童軍繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "絲襪", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "貼紙底襯", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠光面廢紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "感熱紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "紙尿片", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "紙尿布", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "紙尿褲", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "紙本電子發票", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "傳真用圖紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "心電圖紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "標籤貼紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "熱感應紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "衛生紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "衛生棉", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。複合材質紙類，可回收的再利用比例低且影響再生產品品質。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "複寫紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "蠟紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "離心紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "轉印紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "相框", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "桌巾", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "茶葉包裝袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "蚊香", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "黑膠唱片", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "悠遊卡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "捲尺", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "布尺", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "塑膠繩", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "腳踏墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "過期藥丸", "大類": "一般垃圾", "文字說明": "可居家自行處理之藥物為處方藥、指示用藥與成藥、動物用藥、維他命、軟膏/乳劑、噴霧吸入劑、液體藥劑、藥丸鋁箔包装、空罐子。請集中剩餘藥丸及藥水，混和茶葉渣、咖啡渣或擦手紙，密封包裝後，交付鄉鎮市清潔隊垃圾車。麻醉/管制藥品、IV袋、含血或感染廢棄物、注射器/針頭、癌症類藥物需回原開立醫院處置。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "座墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "睡衣", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "磁扣", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "網路線", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "矽膠鍵盤保護膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "撥水矽膠雨刷", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "緞帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "膠帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "複合材質塑膠袋", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "髒污塑膠袋", "大類": "一般垃圾", "文字說明": "請先排空內容物，一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "滑鼠墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "汽機車坐墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "瑜珈墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "睫毛膏", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "碎布", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "免洗竹筷子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "腮紅", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "腰帶", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "選舉旗幟", "大類": "一般垃圾", "文字說明": "請家戶自行裁剪或敲碎裝袋，長寬高剪裁至100公分以下，分裝分次丟置於鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "錄音帶內帶", "大類": "一般垃圾", "文字說明": "先分開塑膠殼與磁帶，塑膠殼可回收，黑色磁帶交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "嬰幼兒坐便器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "環保拋棄式馬桶座墊", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "環保矽膠耐冷耐熱食物保鮮密封袋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "縫針", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "隱形眼鏡", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "擴音器", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "大聲公", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "濾水濾心", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "淨水器濾心", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "橡皮筋", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "寵物項圈", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "鏡子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。若體積較大，請電洽當地清潔隊預約付費清運。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "扇子", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "襪子", "大類": "一般垃圾", "文字說明": "不可回收舊衣包含鞋子、布偶、包包、棉被、枕頭、床單、地毯、貼身內衣褲、髒汙破損衣物等，請直接歸類為「一般垃圾」送交垃圾車。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "護貝紙", "大類": "一般垃圾", "文字說明": "複合材質紙類，可回收的再利用比例低且影響再生產品品質。一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}, {"物品名稱": "護貝膠膜", "大類": "一般垃圾", "文字說明": "一般垃圾應避免夾雜資源回收物、有害廢棄物及廚餘等，且危險尖銳或易碎品應包裹保護，再裝袋交付給鄉鎮市清潔隊垃圾車。", "廢棄物所屬分類": "一般垃圾", "類別": "一般垃圾N01-01"}];
 
-const arena = document.getElementById('arena');
-const crosshair = document.getElementById('crosshair');
-const toast = document.getElementById('toast');
-const timeEl = document.getElementById('time');
-const scoreEl = document.getElementById('score');
-const targetLabelEl = document.getElementById('targetLabel');
-const targetTagEl = document.getElementById('targetTag');
-const descIcon = document.getElementById('descIcon');
-const descItem = document.getElementById('descItem');
-const descText = document.getElementById('descText');
-
-const startOverlay = document.getElementById('startOverlay');
-const endOverlay = document.getElementById('endOverlay');
-const qrBox = document.getElementById('qrBox');
-const lineBtn = document.getElementById('lineBtn');
-const endTitle = document.getElementById('endTitle');
-const endText = document.getElementById('endText');
-const endHero = document.getElementById('endHero');
-
-const TARGET_TYPES = ["資源回收","一般垃圾","廚餘"];
-const TARGET_COPY = {
-  "資源回收":"請瞄準可回收物品",
-  "一般垃圾":"請瞄準一般垃圾",
-  "廚餘":"請瞄準可作廚餘處理的物品"
-};
-const TARGET_THEME = {
-  "資源回收":"♻️",
-  "一般垃圾":"🗑️",
-  "廚餘":"🍎"
-};
+const TYPES = ["資源回收","一般垃圾","廚餘"];
 const MAX_ITEMS = 6;
 const GAME_SECONDS = 40;
-const SCORE_PER_HIT = 10;
-const HIT_RADIUS = 70;
+const GOAL_SCORE = 100;
+const POINTS_PER_HIT = 10;
 
-let activeItems = [];
+const ICON_RULES = [
+  [/電池|充電池|鈕扣/, "🔋"],
+  [/手機|平板|電腦|螢幕|鍵盤|滑鼠|耳機|相機|印表機|主機|硬碟|電器|吹風機|電扇|冰箱|冷氣|烤箱|微波爐|吸塵器|電鍋|熱水瓶|電暖器/, "📱"],
+  [/瓶|罐|鋁|鐵|金屬|鍋|鍋子|保溫|刀|叉|湯匙|鍋鏟|瓦斯罐|噴罐|不鏽鋼|鋼/, "🥫"],
+  [/玻璃|鏡|燈泡|燈管/, "🍾"],
+  [/紙|書|報|紙箱|紙盒|紙杯|紙袋|紙餐盒|紙容器|衛生紙|發票/, "📄"],
+  [/塑膠|寶特瓶|塑膠袋|塑膠盒|保鮮盒|吸管|牙刷|洗髮精|沐浴乳|洗衣精|保特瓶/, "🧴"],
+  [/衣|褲|鞋|襪|帽|包|棉被|枕頭|布/, "👕"],
+  [/水果|果皮|菜|飯|麵|骨|殼|剩菜|剩飯|廚餘|咖啡渣|茶葉|蛋殼/, "🍎"],
+  [/木|樹枝|竹/, "🪵"],
+  [/椅|桌|床|沙發|櫃|家具/, "🪑"],
+  [/玩具|娃娃|積木/, "🧸"],
+  [/口罩|尿布|衛生棉|菸蒂|灰塵|垃圾|髒污/, "🗑️"],
+];
+
+const arena = document.getElementById("arena");
+const crosshair = document.getElementById("crosshair");
+const toastEl = document.getElementById("toast");
+const timeEl = document.getElementById("time");
+const scoreEl = document.getElementById("score");
+const targetLabel = document.getElementById("targetLabel");
+const descIcon = document.getElementById("descIcon");
+const descItem = document.getElementById("descItem");
+const descText = document.getElementById("descText");
+const startOverlay = document.getElementById("startOverlay");
+const endOverlay = document.getElementById("endOverlay");
+const qrWrap = document.getElementById("qrWrap");
+const qrImage = document.getElementById("qrImage");
+const lineBtn = document.getElementById("lineBtn");
+
+let gameActive = false;
 let score = 0;
 let timeLeft = GAME_SECONDS;
+let targetType = TYPES[0];
 let timer = null;
-let animId = null;
-let currentTarget = "資源回收";
-let isPlaying = false;
-let pointer = {x: window.innerWidth/2, y: window.innerHeight*0.68};
+let activeItems = [];
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-function pickRandom(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-function chooseTarget() {
-  currentTarget = pickRandom(TARGET_TYPES);
-  targetLabelEl.textContent = `${TARGET_THEME[currentTarget]} ${currentTarget}`;
-  targetTagEl.textContent = TARGET_COPY[currentTarget];
-}
-
-function getIcon(name="", sub="") {
-  const text = `${name} ${sub}`;
-  const rules = [
-    [/電池|手機|電腦|螢幕|鍵盤|滑鼠|耳機|充電|電器|燈管|燈泡|遙控器/, "🔋"],
-    [/玻璃|酒瓶|瓶罐/, "🍾"],
-    [/鋁罐|鐵罐|金屬|鍋|鍋蓋|鐵|鋁|銅/, "🥫"],
-    [/紙|報紙|紙箱|紙盒|紙杯|紙容器|書本|書籍|信封|紙袋/, "📄"],
-    [/塑膠|寶特瓶|瓶|罐|杯|吸管|洗髮|沐浴|清潔劑|保特/, "🧴"],
-    [/衣|褲|鞋|包|布|棉被|床單|帽|襪/, "👕"],
-    [/樹枝|葉|果皮|果核|剩菜|剩飯|廚餘|菜渣|咖啡渣|茶葉|蛋殼/, "🍎"],
-    [/木|竹|筷|牙籤/, "🪵"],
-    [/瓷|碗|盤|杯|陶|馬桶/, "🍽️"],
-    [/油漆|藥品|農藥|針|刀片/, "⚠️"],
-    [/玩具|娃娃|球/, "🧸"]
-  ];
-  for (const [regex, icon] of rules) {
-    if (regex.test(text)) return icon;
+function iconFor(name, type) {
+  for (const [re, icon] of ICON_RULES) {
+    if (re.test(name)) return icon;
   }
-  return "🗂️";
+  if (type === "廚餘") return "🍃";
+  if (type === "一般垃圾") return "🗑️";
+  return "♻️";
 }
 
-function makeLeaves() {
-  for (let i=0;i<12;i++) {
-    const leaf = document.createElement('div');
-    leaf.className = 'leaf';
-    leaf.textContent = ['🍃','🌿','♻️'][i%3];
-    leaf.style.left = Math.random()*100 + '%';
-    leaf.style.animationDuration = (10 + Math.random()*10) + 's';
-    leaf.style.animationDelay = (-Math.random()*8) + 's';
-    leaf.style.fontSize = (16 + Math.random()*16) + 'px';
-    arena.appendChild(leaf);
-  }
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
+
+function nextTarget() {
+  targetType = pickRandom(TYPES);
+  targetLabel.textContent = targetType;
+}
+
+function normalizeText(txt) {
+  return (txt || "").replace(/\s+/g, " ").trim();
+}
+
+function createBubble() {
+  const el = document.createElement("div");
+  el.className = "bubble";
+  el.textContent = pickRandom(["🍃","♻️","🌿","💧"]);
+  el.style.left = Math.random()*100 + "%";
+  el.style.animationDuration = (14 + Math.random()*12).toFixed(2) + "s";
+  el.style.animationDelay = (-Math.random()*20).toFixed(2) + "s";
+  arena.appendChild(el);
+}
+for (let i=0;i<12;i++) createBubble();
 
 function resetDescription() {
   descIcon.textContent = "💡";
   descItem.textContent = "等待命中物件";
-  descText.textContent = "瞄準畫面上的圖卡並引爆，這裡會顯示該物品的正確處理方式與分類小提醒。";
-  descText.classList.add('desc-placeholder');
+  descText.textContent = "瞄準畫面圖卡並引爆，這裡會顯示正確分類與處理提醒。";
+  descText.classList.add("placeholder");
 }
 
-function updateDescription(record, correct) {
-  descIcon.textContent = getIcon(record.物品名稱, record.廢棄物所屬分類);
-  descItem.textContent = `${correct ? "✔" : "✦"} ${record.物品名稱}`;
-  descText.textContent = record.文字說明 || `此物品分類為「${record.大類}」。`;
-  descText.classList.remove('desc-placeholder');
+function updateDescription(item, correct) {
+  descIcon.textContent = correct ? "✅" : "⚠️";
+  descItem.textContent = item.emoji + " " + item.物品名稱 + "｜" + item.大類;
+  descText.textContent = normalizeText(item.文字說明 || item["回收管道及處理方式"] || "請依照正確分類方式處理。");
+  descText.classList.remove("placeholder");
 }
 
-function spawnOne() {
-  const record = pickRandom(DATASET);
-  const el = document.createElement('div');
-  el.className = 'item';
-  el.innerHTML = `
-    <div class="emoji">${getIcon(record.物品名稱, record.廢棄物所屬分類)}</div>
-    <div class="name">${record.物品名稱}</div>
-    <div class="mini">${record.廢棄物所屬分類 || "分類物品"}</div>
-  `;
-  const topMin = 200;
-  const topMax = Math.max(topMin + 10, window.innerHeight - 180);
-  const leftMin = 60;
-  const leftMax = Math.max(leftMin + 10, Math.min(window.innerWidth, arena.clientWidth || window.innerWidth) - 60);
-  const x = leftMin + Math.random() * (leftMax - leftMin);
-  const y = topMin + Math.random() * (topMax - topMin);
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  arena.appendChild(el);
-
-  const item = {
-    el, record,
-    x, y,
-    vx: (Math.random() > .5 ? 1 : -1) * (1.0 + Math.random()*1.0),
-    vy: (Math.random() > .5 ? 1 : -1) * (0.7 + Math.random()*0.9),
-    w: el.offsetWidth || 96,
-    h: el.offsetHeight || 98
-  };
-  activeItems.push(item);
+function toast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.remove("show");
+  void toastEl.offsetWidth;
+  toastEl.classList.add("show");
 }
 
-function fillItems() {
-  while (activeItems.length < MAX_ITEMS) spawnOne();
-}
-
-function removeItem(item) {
-  activeItems = activeItems.filter(it => it !== item);
-  item.el.remove();
-  if (isPlaying) spawnOne();
-}
-
-function createBlast(x,y) {
-  const b = document.createElement('div');
-  b.className = 'blast';
-  b.style.left = x + 'px';
-  b.style.top = y + 'px';
+function makeBlast(x, y) {
+  const b = document.createElement("div");
+  b.className = "blast";
+  b.style.left = x + "px";
+  b.style.top = y + "px";
   arena.appendChild(b);
-  setTimeout(() => b.remove(), 280);
+  setTimeout(()=> b.remove(), 340);
 }
 
-function showToast(text, good=true) {
-  toast.textContent = text;
-  toast.style.borderColor = good ? 'rgba(34,197,94,.5)' : 'rgba(239,68,68,.5)';
-  toast.classList.remove('show');
-  void toast.offsetWidth;
-  toast.classList.add('show');
-}
-
-function shoot() {
-  if (!isPlaying) return;
-  createBlast(pointer.x, pointer.y);
-  let best = null;
-  let bestDist = Infinity;
-  for (const item of activeItems) {
-    const dx = item.x - pointer.x;
-    const dy = item.y - pointer.y;
-    const dist = Math.hypot(dx,dy);
-    if (dist < HIT_RADIUS && dist < bestDist) {
-      best = item;
-      bestDist = dist;
-    }
-  }
-  if (!best) {
-    showToast('未命中，再試一次！', false);
-    return;
-  }
-
-  const correct = best.record.大類 === currentTarget;
-  if (correct) {
-    score += SCORE_PER_HIT;
-    scoreEl.textContent = score;
-    showToast(`命中成功！ +${SCORE_PER_HIT} 分`, true);
-  } else {
-    showToast(`這個是「${best.record.大類}」`, false);
-  }
-
-  updateDescription(best.record, correct);
-  best.el.classList.add('hit');
-  setTimeout(() => removeItem(best), 220);
-  chooseTarget();
-}
-
-function tick() {
-  if (!isPlaying) return;
-  const width = Math.min(window.innerWidth, arena.clientWidth || window.innerWidth);
-  const height = window.innerHeight;
-  const topMin = 200;
-  const bottomLimit = height - 150;
-  for (const item of activeItems) {
-    item.x += item.vx;
-    item.y += item.vy;
-    if (item.x < 54 || item.x > width - 54) item.vx *= -1;
-    if (item.y < topMin || item.y > bottomLimit) item.vy *= -1;
-    item.el.style.left = item.x + 'px';
-    item.el.style.top = item.y + 'px';
-  }
-  animId = requestAnimationFrame(tick);
-}
-
-function setCrosshair(x,y) {
-  const rect = arena.getBoundingClientRect();
-  const cx = Math.max(36, Math.min(rect.width - 36, x - rect.left));
-  const cy = Math.max(180, Math.min(rect.height - 110, y - rect.top));
-  pointer = {x: cx, y: cy};
-  crosshair.style.left = cx + 'px';
-  crosshair.style.top = cy + 'px';
-}
-
-function bindPointer() {
-  const move = (clientX, clientY) => setCrosshair(clientX, clientY);
-  arena.addEventListener('mousemove', e => move(e.clientX, e.clientY));
-  arena.addEventListener('click', e => {
-    move(e.clientX, e.clientY);
-    shoot();
-  });
-  arena.addEventListener('touchstart', e => {
-    const t = e.touches[0];
-    if (!t) return;
-    move(t.clientX, t.clientY);
-  }, {passive:true});
-  arena.addEventListener('touchmove', e => {
-    const t = e.touches[0];
-    if (!t) return;
-    move(t.clientX, t.clientY);
-  }, {passive:true});
-  arena.addEventListener('touchend', e => {
-    shoot();
-  });
-}
-
-function clearGame() {
-  for (const item of activeItems) item.el.remove();
+function clearItems() {
+  activeItems.forEach(obj => obj.el.remove());
   activeItems = [];
 }
 
+function itemPositionValid(x, y) {
+  return !activeItems.some(obj => {
+    const dx = obj.x - x, dy = obj.y - y;
+    return Math.hypot(dx, dy) < 98;
+  });
+}
+
+function randomPosition() {
+  const topPad = Math.min(window.innerHeight * 0.26, 210);
+  const bottomPad = 170;
+  const width = arena.clientWidth || window.innerWidth;
+  const height = arena.clientHeight || window.innerHeight;
+  for (let i=0;i<40;i++) {
+    const x = 60 + Math.random() * (width - 120);
+    const y = topPad + Math.random() * Math.max(100, height - topPad - bottomPad);
+    if (itemPositionValid(x, y)) return {x,y};
+  }
+  return { x: 60 + Math.random()*(width-120), y: topPad + Math.random()*Math.max(100,height-topPad-bottomPad) };
+}
+
+function spawnOneItem() {
+  const record = pickRandom(DATASET);
+  const item = {
+    ...record,
+    emoji: iconFor(record.物品名稱, record.大類)
+  };
+  const pos = randomPosition();
+  const el = document.createElement("div");
+  el.className = "item";
+  el.style.left = pos.x + "px";
+  el.style.top = pos.y + "px";
+  el.style.setProperty('--driftDur', (1.5 + Math.random()*1.8).toFixed(2) + 's');
+  el.innerHTML = `<div class="emoji">${item.emoji}</div><div class="name">${item.物品名稱}</div><div class="sub">${item["廢棄物所屬分類"] || "分類挑戰"}</div>`;
+  arena.appendChild(el);
+  const obj = { ...item, el, x:pos.x, y:pos.y };
+  activeItems.push(obj);
+
+  const fire = () => {
+    if (!gameActive) return;
+    handleHit(obj);
+  };
+  el.addEventListener('click', fire);
+  el.addEventListener('touchstart', (e) => { e.preventDefault(); fire(); }, {passive:false});
+}
+
+function refillItems() {
+  while (activeItems.length < MAX_ITEMS) spawnOneItem();
+}
+
+function removeItem(obj) {
+  activeItems = activeItems.filter(x => x !== obj);
+  obj.el.remove();
+}
+
+function handleHit(obj) {
+  if (!gameActive) return;
+  makeBlast(obj.x, obj.y);
+  const correct = obj.大類 === targetType;
+  obj.el.classList.add('hit');
+  updateDescription(obj, correct);
+  if (correct) {
+    score += POINTS_PER_HIT;
+    toast(`✔ 命中成功！+${POINTS_PER_HIT} 分`);
+    nextTarget();
+  } else {
+    toast(`✦ 這個是「${obj.大類}」`);
+  }
+  scoreEl.textContent = score;
+  setTimeout(() => {
+    removeItem(obj);
+    if (gameActive) refillItems();
+  }, 220);
+}
+
+function setCrosshair(clientX, clientY) {
+  const rect = arena.getBoundingClientRect();
+  let x = clientX - rect.left;
+  let y = clientY - rect.top;
+  x = Math.max(30, Math.min(rect.width - 30, x));
+  y = Math.max(60, Math.min(rect.height - 90, y));
+  crosshair.style.left = x + "px";
+  crosshair.style.top = y + "px";
+}
+
 function startGame() {
-  clearGame();
-  resetDescription();
+  clearInterval(timer);
+  clearItems();
+  gameActive = true;
   score = 0;
   timeLeft = GAME_SECONDS;
-  isPlaying = true;
   scoreEl.textContent = score;
   timeEl.textContent = timeLeft;
-  chooseTarget();
-  fillItems();
-  cancelAnimationFrame(animId);
-  tick();
-  clearInterval(timer);
+  resetDescription();
+  qrWrap.classList.add('hidden');
+  lineBtn.classList.add('hidden');
+  nextTarget();
+  refillItems();
+  startOverlay.classList.add('hidden');
+  endOverlay.classList.add('hidden');
+
   timer = setInterval(() => {
     timeLeft -= 1;
     timeEl.textContent = timeLeft;
     if (timeLeft <= 0) endGame();
   }, 1000);
-  startOverlay.classList.add('hidden');
-  endOverlay.classList.add('hidden');
 }
 
 function endGame() {
-  isPlaying = false;
+  if (!gameActive) return;
+  gameActive = false;
   clearInterval(timer);
-  cancelAnimationFrame(animId);
-  const passed = score >= 100;
-  endOverlay.classList.remove('hidden');
-  if (passed) {
-    endHero.textContent = '🎉';
-    endTitle.textContent = '恭喜達標';
-    endText.innerHTML = `本次得分 <b>${score}</b> 分，已達抽獎門檻。掃描下方 QR 圖樣或點擊按鈕，即可前往 LINE 參加活動。`;
-    qrBox.classList.remove('hidden');
+  clearItems();
+
+  document.getElementById('endScore').textContent = score;
+
+  const pass = score >= GOAL_SCORE;
+  document.getElementById('endHero').textContent = pass ? "🎉" : "🌱";
+  document.getElementById('endTitle').textContent = pass ? "恭喜達標" : "挑戰完成";
+  document.getElementById('endText').innerHTML = pass
+    ? `你已達到 <b>${score}</b> 分，取得抽獎資格。掃描 QR Code 或點擊按鈕即可前往 LINE。`
+    : `本次得分 <b>${score}</b> 分，距離達標還差 <b>${Math.max(0, GOAL_SCORE-score)}</b> 分。再試一次吧！`;
+
+  if (pass) {
+    qrImage.src = QR_URL;
+    qrWrap.classList.remove('hidden');
     lineBtn.classList.remove('hidden');
   } else {
-    endHero.textContent = '🌟';
-    endTitle.textContent = '再挑戰一次';
-    endText.innerHTML = `本次得分 <b>${score}</b> 分，再接再厲，朝 100 分挑戰！`;
-    qrBox.classList.add('hidden');
+    qrWrap.classList.add('hidden');
     lineBtn.classList.add('hidden');
   }
+
+  endOverlay.classList.remove('hidden');
 }
 
-document.getElementById('startBtn').addEventListener('click', startGame);
-document.getElementById('restartBtn').addEventListener('click', startGame);
-document.getElementById('overlayStart').addEventListener('click', startGame);
-document.getElementById('playAgain').addEventListener('click', startGame);
-lineBtn.addEventListener('click', () => window.location.href = LINE_URL);
+function openLine() {
+  window.open(LINE_URL, "_blank");
+}
 
-window.addEventListener('resize', () => setCrosshair(window.innerWidth/2, window.innerHeight*0.68));
+document.getElementById('startBtn').onclick = startGame;
+document.getElementById('overlayStart').onclick = startGame;
+document.getElementById('restartBtn').onclick = startGame;
+document.getElementById('playAgain').onclick = startGame;
+document.getElementById('lineBtn').onclick = openLine;
 
-makeLeaves();
-bindPointer();
-setCrosshair(window.innerWidth/2, window.innerHeight*0.68);
+window.addEventListener('mousemove', e => setCrosshair(e.clientX, e.clientY));
+arena.addEventListener('touchmove', e => {
+  if (e.touches && e.touches[0]) {
+    setCrosshair(e.touches[0].clientX, e.touches[0].clientY);
+  }
+}, {passive:true});
+window.addEventListener('resize', () => {
+  if (!gameActive) return;
+  clearItems();
+  refillItems();
+});
+
+resetDescription();
+qrImage.src = QR_URL;
 </script>
 </body>
 </html>
