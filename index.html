@@ -819,6 +819,37 @@
     document.addEventListener('visibilitychange', fitForMobile);
     fitForMobile();
 
-  </script>
+  
+// ===== 自適應速度控制（0.8倍＋小螢幕更慢）=====
+function getAdaptiveSpeedFactor(){
+  const baseWidth = 390;
+  const baseHeight = 844;
+  const w = window.innerWidth || baseWidth;
+  const h = window.innerHeight || baseHeight;
+
+  const areaRatio = Math.sqrt((w*h)/(baseWidth*baseHeight));
+
+  // 小螢幕更慢（最低0.6，上限0.8）
+  let factor = 0.8 * Math.min(1, areaRatio);
+
+  return Math.max(0.6, factor);
+}
+
+function applyAdaptiveSpeed(){
+  const factor = getAdaptiveSpeedFactor();
+
+  if(typeof CONFIG !== "undefined"){
+    CONFIG.moveSpeedMin = +(CONFIG.moveSpeedMin * factor).toFixed(2);
+    CONFIG.moveSpeedMax = +(CONFIG.moveSpeedMax * factor).toFixed(2);
+    CONFIG.feedbackDuration = Math.round(CONFIG.feedbackDuration / factor);
+  }
+}
+
+// 初始化與監聽
+applyAdaptiveSpeed();
+window.addEventListener("resize", applyAdaptiveSpeed);
+window.addEventListener("orientationchange", applyAdaptiveSpeed);
+
+</script>
 </body>
 </html>
