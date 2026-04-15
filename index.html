@@ -422,7 +422,7 @@ function spawnOneItem() {
   el.className = "item";
   el.style.left = pos.x + "px";
   el.style.top = pos.y + "px";
-  el.style.setProperty('--driftDur', (1.5 + Math.random()*1.8).toFixed(2) + 's');
+  el.style.setProperty('--driftDur', (0.5 + Math.random()*0.6).toFixed(2) + 's');
   el.innerHTML = `<div class="emoji">${item.emoji}</div><div class="name">${item.物品名稱}</div><div class="sub">${item["廢棄物所屬分類"] || "分類挑戰"}</div>`;
   arena.appendChild(el);
   const obj = { ...item, el, x:pos.x, y:pos.y };
@@ -462,7 +462,7 @@ function handleHit(obj) {
   setTimeout(() => {
     removeItem(obj);
     if (gameActive) refillItems();
-  }, 220);
+  }, 70);
 }
 
 function setCrosshair(clientX, clientY) {
