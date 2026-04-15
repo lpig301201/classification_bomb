@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>分類炸彈大挑戰</title>
+  <title>環保狙擊戰｜活動海報版</title>
   <style>
     :root {
       --bg1:#07111f; --bg2:#0f172a; --bg3:#1e293b;
@@ -233,10 +233,205 @@
       filter:drop-shadow(0 4px 5px rgba(2,6,23,.16));
     }
 
-  </style>
+  
+    .poster-hero{
+      position:absolute;
+      inset:0 0 auto 0;
+      z-index:8;
+      pointer-events:none;
+      padding:calc(14px + var(--safe-top)) 14px 0;
+    }
+    .poster-board{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      border:1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(34,197,94,.28), transparent 22%),
+        radial-gradient(circle at 88% 20%, rgba(56,189,248,.26), transparent 24%),
+        radial-gradient(circle at 78% 84%, rgba(250,204,21,.20), transparent 20%),
+        linear-gradient(135deg, rgba(8,15,35,.88), rgba(15,23,42,.72));
+      box-shadow:0 24px 60px rgba(2,6,23,.28), inset 0 1px 0 rgba(255,255,255,.08);
+      padding:18px 18px 16px;
+      min-height:190px;
+    }
+    .poster-board::before{
+      content:"";
+      position:absolute;
+      inset:auto -30px -30px auto;
+      width:220px; height:220px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,.16), rgba(255,255,255,0) 72%);
+      pointer-events:none;
+    }
+    .poster-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.10);
+      color:#dbeafe;
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .poster-title{
+      margin-top:12px;
+      font-size:clamp(30px,6vw,48px);
+      line-height:1.02;
+      font-weight:1000;
+      letter-spacing:.02em;
+      text-shadow:0 10px 28px rgba(0,0,0,.28);
+    }
+    .poster-title .accent{
+      background:linear-gradient(135deg, #86efac, #67e8f9 48%, #fde68a);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .poster-sub{
+      margin-top:10px;
+      max-width:64%;
+      color:#dbeafe;
+      font-size:14px;
+      line-height:1.6;
+    }
+    .poster-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:14px;
+    }
+    .poster-tag{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:13px;
+      font-weight:800;
+      color:#f8fafc;
+    }
+    .poster-art{
+      position:absolute;
+      right:14px;
+      top:12px;
+      width:178px;
+      height:178px;
+      pointer-events:none;
+      opacity:.95;
+      filter:drop-shadow(0 16px 28px rgba(2,6,23,.32));
+    }
+    .poster-ring{
+      position:absolute;
+      inset:0;
+      margin:auto;
+      width:146px;
+      height:146px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,.22);
+      box-shadow:0 0 0 18px rgba(255,255,255,.05), 0 0 50px rgba(56,189,248,.22);
+    }
+    .poster-ring::before,.poster-ring::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      margin:auto;
+      background:rgba(255,255,255,.9);
+      border-radius:99px;
+    }
+    .poster-ring::before{ width:4px; height:146px; }
+    .poster-ring::after{ width:146px; height:4px; }
+    .poster-dot{
+      position:absolute;
+      inset:0;
+      margin:auto;
+      width:18px; height:18px;
+      border-radius:50%;
+      background:#ef4444;
+      box-shadow:0 0 0 8px rgba(239,68,68,.18), 0 0 26px rgba(239,68,68,.55);
+    }
+    .poster-item{
+      position:absolute;
+      width:68px; height:68px;
+      border-radius:20px;
+      display:flex; align-items:center; justify-content:center; flex-direction:column;
+      background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(241,245,249,.94));
+      color:#0f172a;
+      border:2px solid rgba(255,255,255,.95);
+      font-size:26px;
+      font-weight:900;
+      text-align:center;
+      box-shadow:0 14px 28px rgba(2,6,23,.20);
+    }
+    .poster-item small{
+      display:block;
+      margin-top:2px;
+      font-size:10px;
+      line-height:1.1;
+    }
+    .poster-item.one{ right:112px; top:6px; transform:rotate(-10deg); }
+    .poster-item.two{ right:10px; top:86px; transform:rotate(8deg); }
+    .poster-item.three{ right:120px; top:110px; transform:rotate(9deg); }
+    .topbar{ padding-top:230px; }
+    .headline .title{ display:none; }
+    .headline{
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+    }
+    .scoreboard .metric{ backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+    .mission{
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
+    }
+    @media (max-width:560px){
+      .poster-hero{ padding:calc(8px + var(--safe-top)) 8px 0; }
+      .poster-board{ min-height:170px; padding:14px 14px 12px; border-radius:24px; }
+      .poster-title{ font-size:30px; }
+      .poster-sub{ max-width:58%; font-size:12px; line-height:1.45; }
+      .poster-tags{ gap:6px; margin-top:10px; }
+      .poster-tag{ font-size:11px; padding:7px 10px; }
+      .poster-art{ width:138px; height:138px; right:8px; top:12px; }
+      .poster-ring{ width:112px; height:112px; }
+      .poster-ring::before{ height:112px; }
+      .poster-ring::after{ width:112px; }
+      .poster-dot{ width:14px; height:14px; }
+      .poster-item{ width:54px; height:54px; border-radius:16px; font-size:20px; }
+      .poster-item small{ font-size:9px; }
+      .poster-item.one{ right:88px; top:4px; }
+      .poster-item.two{ right:4px; top:70px; }
+      .poster-item.three{ right:88px; top:92px; }
+      .topbar{ padding-top:202px; }
+    }
+
+</style>
 </head>
 <body>
   <div class="app">
+
+    <div class="poster-hero">
+      <div class="poster-board">
+        <div class="poster-kicker">♻️ 校園環保互動挑戰</div>
+        <div class="poster-title">環保<span class="accent">狙擊戰</span></div>
+        <div class="poster-sub">鎖定目標、快速分類、挑戰高分。把垃圾分類知識，玩成一場有節奏的反應任務。</div>
+        <div class="poster-tags">
+          <div class="poster-tag">🎯 答對 +10 分</div>
+          <div class="poster-tag">⏳ 40 秒挑戰</div>
+          <div class="poster-tag">🎁 達標抽獎</div>
+        </div>
+        <div class="poster-art">
+          <div class="poster-ring"></div>
+          <div class="poster-dot"></div>
+          <div class="poster-item one">♻️<small>回收</small></div>
+          <div class="poster-item two">🗑️<small>垃圾</small></div>
+          <div class="poster-item three">🍎<small>廚餘</small></div>
+        </div>
+      </div>
+    </div>
+
     <div id="arena"></div>
     <div id="crosshair" class="crosshair">
       <div class="ring"></div>
@@ -272,13 +467,13 @@
         </div>
       </div>
       <div class="controls">
-        <button id="startBtn" class="action-btn">開始遊戲</button>
+        <button id="startBtn" class="action-btn">立即開始</button>
       </div>
     </div>
 
     <div id="startOverlay" class="overlay">
       <div class="glass modal">
-        <h1>分類炸彈大挑戰</h1>
+        <h1>環保狙擊戰</h1>
         
         <div class="pill-row">
           <div class="pill">🎯 答對 +10 分</div>
