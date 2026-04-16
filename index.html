@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>環保狙擊戰</title>
+  <!-- layout shifted upward to expand play area -->
   <style>
     :root {
       --bg1:#07111f; --bg2:#0f172a; --bg3:#1e293b;
@@ -23,14 +24,139 @@
     #arena::after { width:300px; height:300px; background:#a855f7; right:-60px; bottom:10%; }
     .topbar { position:absolute; inset:0 0 auto 0; z-index:20; padding:calc(12px + var(--safe-top)) 14px 10px; }
     .glass { background:var(--panel); border:1px solid var(--line); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); box-shadow:var(--shadow); border-radius:24px; }
-    .headline { padding:14px 16px; display:grid; grid-template-columns:1.1fr .9fr; gap:10px; align-items:center; }
+    .headline { padding:14px 16px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; }
     .title { font-size:clamp(22px,4.8vw,34px); font-weight:900; line-height:1.05; letter-spacing:.5px; }
     .subtitle { margin-top:6px; color:var(--muted); font-size:13px; line-height:1.45; }
     .scoreboard { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+
+    
+.headline-right { display:block; }
+.top-inline-target-wrap { display:flex; align-items:center; min-width:0; }
+.top-inline-target {
+  display:flex; align-items:center; gap:10px; min-width:0;
+  padding:8px 12px; border-radius:18px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+}
+.top-inline-target .target-label { margin:0; white-space:nowrap; font-size:12px; color:var(--muted); }
+.top-inline-target .target-chip { padding:8px 12px; font-size:clamp(16px,3.2vw,22px); max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
     .metric { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:10px 8px; text-align:center; }
     .metric .k { font-size:12px; color:var(--muted); margin-bottom:4px; }
     .metric .v { font-size:clamp(20px,4vw,28px); font-weight:900; }
-    .mission { margin-top:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    .headline-left{ min-width:0; }
+    .game-info-row{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:stretch;
+    }
+    .info-target-panel{
+      min-height:112px;
+      height:112px;
+      padding:14px 18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border-radius:24px;
+      background:
+        radial-gradient(circle at left center, rgba(103,232,249,.18), transparent 42%),
+        linear-gradient(135deg, rgba(103,232,249,.14), rgba(59,130,246,.18));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 12px 28px rgba(15,23,42,.14), inset 0 1px 0 rgba(255,255,255,.12);
+    }
+    .info-target-panel .target-label{
+      font-size:14px;
+      color:#dbeafe;
+      margin:0 0 10px 0;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .info-target-panel .target-chip{
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      align-items:center;
+      gap:10px;
+      padding:12px 18px;
+      border-radius:999px;
+      font-size:clamp(24px,4vw,34px);
+      font-weight:900;
+      line-height:1;
+      box-shadow:0 10px 22px rgba(15,23,42,.16), inset 0 1px 0 rgba(255,255,255,.18);
+    }
+    .info-side{
+      width:min(100%, 250px);
+      display:flex;
+      align-items:stretch;
+    }
+    .info-side .scoreboard{
+      width:100%;
+      height:112px;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+    .info-side .scoreboard .metric{
+      min-width:0;
+      height:112px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      border-radius:20px;
+    }
+    @media (max-width:560px){
+      .game-info-row{
+        gap:10px;
+        grid-template-columns:minmax(0,1fr) 230px;
+      }
+      .info-target-panel{
+        min-height:96px;
+        height:96px;
+        padding:12px 14px;
+        border-radius:22px;
+      }
+      .info-target-panel .target-label{
+        font-size:13px;
+        margin-bottom:8px;
+      }
+      .info-target-panel .target-chip{
+        font-size:clamp(20px,4vw,28px);
+        padding:10px 14px;
+      }
+      .info-side{
+        width:230px;
+      }
+      .info-side .scoreboard{
+        height:96px;
+      }
+      .info-side .scoreboard .metric{
+        height:96px;
+      }
+    }
+
+@media (max-width:560px){
+      
+      
+      
+      
+      
+      
+      
+    }
+
+    .mission { display:none;  margin-top:10px; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
     .target-label { color:var(--muted); font-size:12px; margin-bottom:4px; }
     .target-chip { display:inline-flex; align-items:center; gap:10px; padding:10px 14px; border-radius:999px; font-size:clamp(18px,4vw,24px); font-weight:900; color:#fff; border:1px solid rgba(255,255,255,.15); }
     .mission-tip { font-size:12px; color:var(--muted); line-height:1.45; text-align:right; max-width:42%; }
@@ -88,7 +214,12 @@
     @keyframes burst { 0%{ transform:translate(-50%,-50%) scale(.2); opacity:1; } 100%{ transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.45); opacity:0; } }
 
     @media (max-width:560px) {
+
       .headline { grid-template-columns:1fr; }
+      .headline-right { width:100%; }
+      .scoreboard { width:100%; }
+      .top-inline-target-wrap { width:100%; }
+
       .mission { flex-direction:column; align-items:flex-start; }
       .mission-tip { max-width:none; text-align:left; }
       .floating-item { width:84px; height:84px; border-radius:24px; }
@@ -140,6 +271,11 @@
       .title { font-size:clamp(20px,6vw,28px); }
       .subtitle { font-size:11px; }
       .scoreboard { grid-template-columns:repeat(3,1fr); }
+
+      .top-inline-target { border-radius:16px; padding:7px 10px; }
+      .top-inline-target .target-label { font-size:11px; }
+      .top-inline-target .target-chip { font-size:15px; padding:6px 10px; }
+
       .mission { padding:8px 10px; gap:6px; flex-direction:row; align-items:center; }
       .target-chip { font-size:16px; padding:7px 10px; }
       .mission-tip { font-size:10px; max-width:44%; text-align:right; }
@@ -195,7 +331,7 @@
       background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
       box-shadow:0 20px 50px rgba(2,6,23,.32), inset 0 1px 0 rgba(255,255,255,.12);
     }
-    .headline{
+    .headline{ margin-top:10px;
       position:relative;
       overflow:hidden;
     }
@@ -239,9 +375,9 @@
       inset:0 0 auto 0;
       z-index:8;
       pointer-events:none;
-      padding:calc(14px + var(--safe-top)) 14px 0;
+      padding:calc(6px + var(--safe-top)) 14px 0;
     }
-    .poster-board{
+    .poster-board{ min-height:190px; overflow:visible;
       position:relative;
       overflow:hidden;
       border-radius:28px;
@@ -299,10 +435,14 @@
       line-height:1.6;
     }
     .poster-tags{
-      display:flex;
+      display:flex !important;
       flex-wrap:wrap;
       gap:10px;
       margin-top:14px;
+      position:relative;
+      z-index:6;
+      visibility:visible !important;
+      opacity:1 !important;
     }
     .poster-tag{
       display:inline-flex;
@@ -377,9 +517,9 @@
     .poster-item.one{ right:112px; top:6px; transform:rotate(-10deg); }
     .poster-item.two{ right:10px; top:86px; transform:rotate(8deg); }
     .poster-item.three{ right:120px; top:110px; transform:rotate(9deg); }
-    .topbar{ padding-top:230px; }
+    .topbar{ padding-top:206px; }
     .headline .title{ display:none; }
-    .headline{
+    .headline{ margin-top:10px;
       background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
     }
     .scoreboard .metric{ backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
@@ -388,8 +528,8 @@
       background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
     }
     @media (max-width:560px){
-      .poster-hero{ padding:calc(8px + var(--safe-top)) 8px 0; }
-      .poster-board{ min-height:170px; padding:14px 14px 12px; border-radius:24px; }
+      .poster-hero{ padding:calc(2px + var(--safe-top)) 8px 0; }
+      .poster-board{ min-height:190px; overflow:visible; min-height:170px; padding:14px 14px 12px; border-radius:24px; }
       .poster-title{ font-size:30px; }
       .poster-sub{ max-width:58%; font-size:12px; line-height:1.45; }
       .poster-tags{ gap:6px; margin-top:10px; }
@@ -404,13 +544,92 @@
       .poster-item.one{ right:88px; top:4px; }
       .poster-item.two{ right:4px; top:70px; }
       .poster-item.three{ right:88px; top:92px; }
-      .topbar{ padding-top:202px; }
+      .topbar{ padding-top:178px; }
+    }
+
+
+
+    /* === spacious mobile optimization === */
+    .app.compact-play .poster-hero{ padding:calc(6px + var(--safe-top)) 8px 0; }
+    .app.compact-play .poster-board{ min-height:190px; overflow:visible; min-height:128px; padding:10px 12px 10px; border-radius:22px; }
+    .app.compact-play .poster-kicker{ font-size:10px; padding:6px 10px; }
+    .app.compact-play .poster-title{ margin-top:8px; font-size:clamp(24px,6vw,34px); }
+    .app.compact-play .poster-sub{ margin-top:6px; max-width:54%; font-size:11px; line-height:1.35; }
+    .app.compact-play .poster-tags{ gap:6px; margin-top:8px; }
+    .app.compact-play .poster-tag{ font-size:10px; padding:6px 9px; }
+    .app.compact-play .poster-art{ width:118px; height:118px; right:8px; top:10px; }
+    .app.compact-play .poster-ring{ width:96px; height:96px; }
+    .app.compact-play .poster-ring::before{ height:96px; }
+    .app.compact-play .poster-ring::after{ width:96px; }
+    .app.compact-play .poster-dot{ width:12px; height:12px; }
+    .app.compact-play .poster-item{ width:46px; height:46px; border-radius:14px; font-size:18px; }
+    .app.compact-play .poster-item small{ font-size:8px; }
+    .app.compact-play .poster-item.one{ right:72px; top:4px; }
+    .app.compact-play .poster-item.two{ right:0px; top:60px; }
+    .app.compact-play .poster-item.three{ right:72px; top:78px; }
+    .app.compact-play .topbar{ padding-top:184px; }
+    .app.compact-play .headline{ margin-top:10px; padding:8px 10px; gap:8px; border-radius:20px; grid-template-columns:minmax(0,1fr) auto; }
+    .app.compact-play .scoreboard{ gap:6px; }
+    .app.compact-play .metric{ padding:7px 4px; border-radius:14px; }
+    .app.compact-play .metric .k{ font-size:10px; margin-bottom:2px; }
+    .app.compact-play .metric .v{ font-size:clamp(16px,4.5vw,22px); }
+
+    .app.compact-play .top-inline-target{ padding:8px 10px; border-radius:16px; }
+    .app.compact-play .top-inline-target .target-label{ font-size:10px; }
+    .app.compact-play .top-inline-target .target-chip{ padding:6px 10px; font-size:clamp(15px,4vw,18px); }
+
+    .app.compact-play .mission{ margin-top:6px; padding:8px 10px; min-height:auto; }
+    .app.compact-play .target-label{ font-size:10px; margin-bottom:2px; }
+    .app.compact-play .target-chip{ padding:6px 10px; font-size:clamp(15px,4vw,18px); }
+    .app.compact-play .bottom-ui{ padding:0 8px calc(8px + var(--safe-bottom)); }
+    .app.compact-play .feedback{ min-height:56px; padding:8px 10px; border-radius:18px; }
+    .app.compact-play .feedback strong{ font-size:14px; }
+    .app.compact-play .feedback p{ font-size:11px; line-height:1.25; -webkit-line-clamp:1; }
+    .app.compact-play .feedback-badge{ width:30px; height:30px; font-size:15px; border-radius:10px; }
+    .app.compact-play .controls{ margin-top:6px; }
+    .app.compact-play .action-btn{ padding:12px 14px; font-size:15px; border-radius:16px; }
+    .app.compact-play.is-prestart .feedback{ display:none; }
+    .app.compact-play.is-prestart .controls{ margin-top:0; }
+    .app.compact-play.is-prestart .bottom-ui{ padding-bottom:calc(8px + var(--safe-bottom)); }
+    @media (min-width: 561px){
+      .app.compact-play .poster-board{ min-height:190px; overflow:visible; min-height:148px; }
+      .app.compact-play .poster-art{ width:132px; height:132px; }
+      .app.compact-play .topbar{ padding-top:184px; }
+      .app.compact-play .headline{ margin-top:10px; grid-template-columns:minmax(0,1fr) auto; }
+    }
+
+
+    .mission,
+    .inline-target-wrap,
+    .inline-target,
+    [data-old-target="removed"]{
+      display:none !important;
+    }
+
+    .poster-tags{
+      display:flex !important;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+      position:relative;
+      z-index:5;
+    }
+
+
+    .poster-hero{
+      z-index:22;
+    }
+    .poster-board{
+      z-index:22;
+    }
+    .topbar{
+      z-index:20;
     }
 
 </style>
 </head>
 <body>
-  <div class="app">
+  <div id="app" class="app compact-play is-prestart">
 
     <div class="poster-hero">
       <div class="poster-board">
@@ -438,22 +657,24 @@
       <div class="dot"></div>
     </div>
 
+    
     <div class="topbar">
       <div class="glass headline">
-        <div>
+        <div class="headline-left">
           <div class="title">♻️ 分類炸彈大挑戰</div>
-          
         </div>
-        <div class="scoreboard">
-          <div class="metric"><div class="k">剩餘時間</div><div class="v" id="timeValue">40</div></div>
-          <div class="metric"><div class="k">目前分數</div><div class="v" id="scoreValue">0</div></div>
-          <div class="metric"><div class="k">達標門檻</div><div class="v">100</div></div>
-        </div>
-      </div>
-      <div class="glass mission">
-        <div>
-          <div class="target-label">本回合目標</div>
-          <div class="target-chip" id="targetChip">♻️ 資源回收</div>
+        <div class="game-info-row">
+          <div class="info-target-panel glass">
+            <div class="target-label">本回合目標</div>
+            <div class="target-chip" id="targetChip">♻️ 資源回收</div>
+          </div>
+          <div class="info-side">
+            <div class="scoreboard">
+              <div class="metric"><div class="k">剩餘時間</div><div class="v" id="timeValue">40</div></div>
+              <div class="metric"><div class="k">目前分數</div><div class="v" id="scoreValue">0</div></div>
+              <div class="metric"><div class="k">達標門檻</div><div class="v">100</div></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -568,6 +789,13 @@
       timeValue.textContent = state.timeLeft;
       scoreValue.textContent = state.score;
     }
+    function applyLayoutDensity() {
+      const appEl = document.getElementById('app');
+      if (!appEl) return;
+      const compact = window.innerWidth <= 560 || window.innerHeight <= 820;
+      appEl.classList.toggle('compact-play', compact);
+      CONFIG.itemCount = compact ? 5 : 6;
+    }
     function setTargetCategory(category) {
       state.targetCategory = category;
       const style = CATEGORY_STYLE[category];
@@ -583,13 +811,23 @@
       for (const item of state.activeItems.values()) item.el.remove();
       state.activeItems.clear();
     }
+    function getPlayBounds() {
+      const appEl = document.getElementById('app');
+      const topbarEl = document.querySelector('.topbar');
+      const bottomUiEl = document.querySelector('.bottom-ui');
+      const appRect = appEl.getBoundingClientRect();
+      const topRect = topbarEl.getBoundingClientRect();
+      const bottomRect = bottomUiEl.getBoundingClientRect();
+      const topSafe = Math.max(132, topRect.bottom - appRect.top + 12);
+      const bottomSafe = Math.max(96, appRect.bottom - bottomRect.top + 12);
+      return { topSafe, bottomSafe };
+    }
     function randomPosition() {
-      const topSafe = window.innerHeight < 700 ? 230 : 250;
-      const bottomSafe = window.innerHeight < 700 ? 175 : 195;
+      const { topSafe, bottomSafe } = getPlayBounds();
       const width = arena.clientWidth;
       const height = arena.clientHeight;
       return {
-        x: 64 + Math.random() * Math.max(60, width - 128),
+        x: 54 + Math.random() * Math.max(60, width - 108),
         y: topSafe + Math.random() * Math.max(60, height - topSafe - bottomSafe)
       };
     }
@@ -703,14 +941,13 @@
       if (state.ended) return;
       const width = arena.clientWidth;
       const height = arena.clientHeight;
-      const topSafe = window.innerHeight < 700 ? 230 : 250;
-      const bottomSafe = window.innerHeight < 700 ? 175 : 195;
+      const { topSafe, bottomSafe } = getPlayBounds();
       for (const item of state.activeItems.values()) {
         item.x += item.vx;
         item.y += item.vy;
-        if (item.x < 54 || item.x > width - 54) item.vx *= -1;
+        if (item.x < 48 || item.x > width - 48) item.vx *= -1;
         if (item.y < topSafe || item.y > height - bottomSafe) item.vy *= -1;
-        item.x = clamp(item.x, 54, width - 54);
+        item.x = clamp(item.x, 48, width - 48);
         item.y = clamp(item.y, topSafe, height - bottomSafe);
         item.el.style.left = `${item.x}px`;
         item.el.style.top = `${item.y}px`;
@@ -720,7 +957,7 @@
     function startGame() {
       state.started = true; state.ended = false; state.score = 0; state.hits = 0; state.attempts = 0; state.timeLeft = CONFIG.gameSeconds;
       updateStats(); clearArena(); chooseNextCategory();
-      startOverlay.classList.add('hide'); endOverlay.classList.add('hide'); crosshair.classList.add('show');
+      startOverlay.classList.add('hide'); endOverlay.classList.add('hide'); crosshair.classList.add('show'); document.getElementById('app').classList.remove('is-prestart');
       setFeedback('遊戲開始！', '把準星移到正確物品上，點一下就能引爆得分。', '🚀');
       fillArena();
       clearInterval(state.timer);
@@ -761,6 +998,7 @@
       }
       endOverlay.classList.remove('hide');
       crosshair.classList.remove('show');
+      document.getElementById('app').classList.add('is-prestart');
       setFeedback(passed ? '挑戰成功！' : '差一點點！', passed ? '已達標，可前往 LINE 抽獎。' : '再挑戰一次，把分數拉上去。', passed ? '🏆' : '🔥');
     }
     function updatePointer(clientX, clientY) {
@@ -773,10 +1011,12 @@
     arena.addEventListener('pointermove', e => updatePointer(e.clientX, e.clientY));
     arena.addEventListener('pointerdown', e => updatePointer(e.clientX, e.clientY));
     window.addEventListener('resize', () => {
+      applyLayoutDensity();
       updatePointer(window.innerWidth / 2, window.innerHeight / 2);
     });
     startBtn.addEventListener('click', startGame);
     overlayStartBtn.addEventListener('click', startGame);
+    applyLayoutDensity();
     updateStats();
     setTargetCategory('資源回收');
     updatePointer(window.innerWidth/2, window.innerHeight/2);
@@ -802,8 +1042,8 @@
     }
 
     applyResponsiveSpeed();
-    window.addEventListener('resize', applyResponsiveSpeed, { passive:true });
-    window.addEventListener('orientationchange', applyResponsiveSpeed, { passive:true });
+    window.addEventListener('resize', () => { applyResponsiveSpeed(); applyLayoutDensity(); }, { passive:true });
+    window.addEventListener('orientationchange', () => { applyResponsiveSpeed(); applyLayoutDensity(); }, { passive:true });
 
     function fitForMobile() {
       const app = document.querySelector('.app');
@@ -839,9 +1079,9 @@ function applyAdaptiveSpeed(){
   const factor = getAdaptiveSpeedFactor();
 
   if(typeof CONFIG !== "undefined"){
-    CONFIG.moveSpeedMin = +(CONFIG.moveSpeedMin * factor).toFixed(2);
-    CONFIG.moveSpeedMax = +(CONFIG.moveSpeedMax * factor).toFixed(2);
-    CONFIG.feedbackDuration = Math.round(CONFIG.feedbackDuration / factor);
+    CONFIG.moveSpeedMin = +(1.56 * factor).toFixed(2);
+    CONFIG.moveSpeedMax = +(3.36 * factor).toFixed(2);
+    CONFIG.feedbackDuration = Math.round(450 / Math.max(0.6, factor));
   }
 }
 
