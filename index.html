@@ -3,195 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-  <title>🌍 環保戰士守護地球｜宣導版</title>
+  <title>🌍 環保戰士守護地球｜廚餘淨化任務</title>
   <style>
-
-    :root{
-      --vh: 1vh;
-    }
-    html{
-      height:-webkit-fill-available;
-    }
-    body{
-      min-height:-webkit-fill-available;
-      min-height:calc(var(--vh, 1vh) * 100);
-      position:relative !important;
-      width:100%;
-      overscroll-behavior:none;
-      -webkit-text-size-adjust:100%;
-    }
-    .app{
-      width:100%;
-      max-width:760px;
-      height:calc(var(--vh, 1vh) * 100) !important;
-      min-height:calc(var(--vh, 1vh) * 100) !important;
-      max-height:calc(var(--vh, 1vh) * 100) !important;
-      margin:0 auto;
-      isolation:isolate;
-    }
-    .topbar, .bottom-ui, .overlay, .action-btn, .ghost-btn, .link-btn, .target{
-      touch-action:manipulation;
-    }
-    .topbar, .bottom-ui{
-      pointer-events:none;
-    }
-    .topbar .glass, .bottom-ui .glass, .overlay, .overlay *{
-      pointer-events:auto;
-    }
-    .hero, .question-panel, .feedback{
-      box-shadow:0 14px 34px rgba(2,6,23,.28);
-    }
-
     :root {
-      --bg1:#07111f; --bg2:#0f172a; --bg3:#1e293b;
-      --panel:rgba(255,255,255,.11); --line:rgba(255,255,255,.14);
-      --text:#f8fafc; --muted:#cbd5e1; --good:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+      --panel:rgba(255,255,255,.12);
+      --line:rgba(255,255,255,.14);
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --good:#22c55e;
+      --bad:#ef4444;
       --shadow:0 24px 60px rgba(2,6,23,.42);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color: transparent; user-select:none; }
-    html,body {
-      margin:0; height:100%;
+    html,body{
+      margin:0; height:100%; overflow:hidden;
       font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
       color:var(--text);
-      overflow:hidden;
       background:
-        radial-gradient(circle at 10% 15%, rgba(34,197,94,.35), transparent 18%),
-        radial-gradient(circle at 85% 18%, rgba(56,189,248,.28), transparent 20%),
-        radial-gradient(circle at 82% 82%, rgba(250,204,21,.18), transparent 18%),
+        radial-gradient(circle at 12% 18%, rgba(34,197,94,.30), transparent 18%),
+        radial-gradient(circle at 88% 20%, rgba(56,189,248,.22), transparent 18%),
+        radial-gradient(circle at 86% 82%, rgba(250,204,21,.15), transparent 18%),
         linear-gradient(180deg, #1d4ed8 0%, #0f172a 48%, #020617 100%);
     }
-    body { position:fixed; inset:0; width:100%; overscroll-behavior:none; }
-    .app {
+    body{position:fixed; inset:0; width:100%;}
+    .app{
       position:relative;
-      width:min(100vw, 760px);
-      height:100dvh; min-height:100dvh; max-height:100dvh;
-      margin:0 auto; overflow:hidden;
+      width:min(100vw,760px);
+      height:100dvh;
+      min-height:100dvh;
+      max-height:100dvh;
+      margin:0 auto;
+      overflow:hidden;
     }
-    .app::before {
-      content:"";
-      position:absolute; inset:auto auto 8% -40px;
-      width:160px; height:160px; border-radius:50%;
-      background:radial-gradient(circle, rgba(34,197,94,.30), transparent 70%);
-      filter:blur(12px); pointer-events:none;
-    }
-    .app::after {
-      content:"";
-      position:absolute; inset:14% -50px auto auto;
-      width:190px; height:190px; border-radius:50%;
-      background:radial-gradient(circle, rgba(56,189,248,.24), transparent 70%);
-      filter:blur(14px); pointer-events:none;
-    }
-
-
-    .deco-hill{
-      position:absolute;
-      bottom:-14px;
-      width:220px; height:80px;
-      border-radius:50% 50% 0 0;
-      background:linear-gradient(180deg, rgba(74,222,128,.55), rgba(22,101,52,.55));
-      filter:blur(2px);
-      z-index:2;
-      pointer-events:none;
-    }
-    .deco-hill.left{ left:-40px; }
-    .deco-hill.right{ right:-30px; width:250px; }
-    .deco-badge{
-      position:absolute;
-      z-index:2;
-      pointer-events:none;
-      font-size:30px;
-      filter:drop-shadow(0 6px 12px rgba(2,6,23,.18));
-    }
-
-    .leaf, .cloud, .spark {
-      position:absolute; pointer-events:none; opacity:.9;
-      filter:drop-shadow(0 6px 12px rgba(2,6,23,.18));
-      z-index:1;
-    }
-    .leaf { font-size:20px; }
-    .cloud { font-size:28px; opacity:.72; }
-    .spark { font-size:18px; opacity:.8; }
-
-    #arena {
-      position:absolute; inset:0; overflow:hidden; touch-action:none;
-      z-index:5;
-    }
-
-    .topbar {
-      position:absolute; inset:0 0 auto 0; z-index:20;
-      padding:calc(10px + var(--safe-top)) 12px 8px;
-    }
-    .glass {
+    .glass{
       background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
       border:1px solid var(--line);
       border-radius:24px;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
     }
-    .hero {
-      padding:14px 14px 12px;
+    .deco{
+      position:absolute; pointer-events:none; z-index:1;
+      filter:drop-shadow(0 6px 12px rgba(2,6,23,.18));
+      opacity:.92;
+    }
+    .cloud{font-size:28px; opacity:.7;}
+    .leaf{font-size:22px;}
+    .spark{font-size:18px;}
+
+    #arena{
+      position:absolute; inset:0;
       overflow:hidden;
-      position:relative;
+      z-index:5;
+      touch-action:manipulation;
     }
-    .hero::after {
+
+    .topbar{
+      position:absolute; inset:0 0 auto 0; z-index:20;
+      padding:calc(10px + var(--safe-top)) 12px 8px;
+    }
+    .hero{
+      padding:14px 14px 12px;
+      position:relative; overflow:hidden;
+    }
+    .hero::after{
       content:"";
       position:absolute; right:-40px; bottom:-40px;
       width:160px; height:160px; border-radius:50%;
       background:radial-gradient(circle, rgba(255,255,255,.12), transparent 68%);
     }
-    .hero-kicker {
+    .hero-kicker{
       display:inline-flex; align-items:center; gap:8px;
       padding:7px 10px; border-radius:999px;
       background:rgba(255,255,255,.08);
       color:#dbeafe; font-size:11px; font-weight:800; letter-spacing:.08em;
     }
-    .hero-title {
-      margin-top:10px; font-size:clamp(24px, 5.8vw, 36px); font-weight:1000; line-height:1.02;
+    .hero-title{
+      margin-top:10px;
+      font-size:clamp(24px,5.8vw,36px);
+      line-height:1.02;
+      font-weight:1000;
     }
-    .hero-title .accent {
+    .hero-title .accent{
       background:linear-gradient(135deg, #86efac, #67e8f9 48%, #fde68a);
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
-    .hero-sub {
-      margin-top:8px; color:var(--muted); font-size:13px; line-height:1.5;
+    .hero-sub{
+      margin-top:8px;
       max-width:74%;
+      color:var(--muted);
+      font-size:13px; line-height:1.5;
     }
-    .hero-tags {
+    .hero-tags{
       display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;
     }
-    .hero-tag {
-      padding:8px 10px; border-radius:999px; font-size:12px; font-weight:800;
-      background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    .hero-tag{
+      padding:8px 10px; border-radius:999px;
+      font-size:12px; font-weight:800;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
     }
-    .hero-art {
+    .hero-art{
       position:absolute; right:12px; top:14px; width:124px; height:124px;
       pointer-events:none; opacity:.95;
     }
-    .hero-ring {
+    .hero-ring{
       position:absolute; inset:0; margin:auto; width:92px; height:92px;
       border-radius:50%; border:4px solid rgba(255,255,255,.24);
       box-shadow:0 0 0 12px rgba(255,255,255,.05), 0 0 26px rgba(56,189,248,.18);
     }
-    .hero-ring::before, .hero-ring::after {
+    .hero-ring::before,.hero-ring::after{
       content:""; position:absolute; inset:0; margin:auto; background:#fff; border-radius:99px;
     }
-    .hero-ring::before { width:4px; height:92px; }
-    .hero-ring::after { width:92px; height:4px; }
-    .hero-dot {
-      position:absolute; inset:0; margin:auto; width:14px; height:14px; border-radius:50%;
-      background:#ef4444; box-shadow:0 0 0 8px rgba(239,68,68,.18), 0 0 18px rgba(239,68,68,.55);
+    .hero-ring::before{ width:4px; height:92px; }
+    .hero-ring::after{ width:92px; height:4px; }
+    .hero-dot{
+      position:absolute; inset:0; margin:auto; width:14px; height:14px;
+      border-radius:50%; background:#ef4444;
+      box-shadow:0 0 0 8px rgba(239,68,68,.18), 0 0 18px rgba(239,68,68,.55);
     }
 
-    .question-panel {
+    .question-panel{
       margin-top:10px;
       padding:12px;
-      display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; align-items:stretch;
+      display:grid; grid-template-columns:minmax(0,1fr) auto;
+      gap:10px; align-items:stretch;
     }
-    .question-box {
-      min-height:92px;
+    .question-box{
+      min-height:96px;
       padding:12px 14px;
       border-radius:22px;
       background:
@@ -200,50 +142,49 @@
       border:1px solid rgba(255,255,255,.12);
       display:flex; flex-direction:column; justify-content:center;
     }
-    .question-label {
+    .question-label{
       color:#dbeafe; font-size:13px; font-weight:800; margin-bottom:8px;
     }
-    .question-text {
-      font-size:clamp(18px, 3.8vw, 25px); line-height:1.25; font-weight:900;
-      text-shadow:0 6px 20px rgba(2,6,23,.20);
+    .question-text{
+      font-size:clamp(18px, 3.8vw, 25px);
+      line-height:1.25; font-weight:900;
     }
-    .scoreboard {
-      display:grid; grid-template-columns:repeat(4,1fr); gap:8px; width:min(100%, 328px);
+    .scoreboard{
+      display:grid; grid-template-columns:repeat(4,1fr); gap:8px; width:min(100%,332px);
     }
-    .metric {
-      min-width:70px;
+    .metric{
+      min-width:72px;
       padding:10px 6px;
       border-radius:18px;
       text-align:center;
       background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
       border:1px solid rgba(255,255,255,.12);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
     }
-    .metric .k { font-size:11px; color:var(--muted); margin-bottom:4px; }
-    .metric .v { font-size:clamp(18px, 4vw, 26px); font-weight:900; }
+    .metric .k{font-size:11px; color:var(--muted); margin-bottom:4px;}
+    .metric .v{font-size:clamp(18px,4vw,26px); font-weight:900;}
 
-    .bottom-ui {
+    .bottom-ui{
       position:absolute; inset:auto 0 0 0; z-index:20;
       padding:0 12px calc(10px + var(--safe-bottom));
     }
-    .feedback {
-      min-height:74px;
+    .feedback{
+      min-height:78px;
       padding:10px 12px;
       display:flex; align-items:center; gap:10px;
     }
-    .feedback-badge {
+    .feedback-badge{
       width:36px; height:36px; border-radius:12px; display:grid; place-items:center;
       background:rgba(255,255,255,.10); font-size:18px; flex:none;
     }
-    .feedback strong { display:block; font-size:16px; margin-bottom:4px; }
-    .feedback p {
+    .feedback strong{display:block; font-size:16px; margin-bottom:4px;}
+    .feedback p{
       margin:0; color:var(--muted); font-size:12px; line-height:1.45;
       display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
     }
 
-    .target {
+    .target{
       position:absolute;
-      width:118px; height:118px;
+      width:110px; height:110px;
       transform:translate(-50%,-50%);
       border-radius:50%;
       display:flex; align-items:center; justify-content:center;
@@ -259,33 +200,43 @@
         0 18px 34px rgba(2,6,23,.30),
         0 0 0 10px rgba(34,197,94,.08),
         inset 0 0 0 1px rgba(255,255,255,.22);
-      z-index:10;
-      overflow:visible;
+      z-index:10; overflow:visible;
     }
-    .target::before {
+    .target::before{
       content:"💀";
-      position:absolute;
-      top:-16px;
-      left:50%;
-      transform:translateX(-50%);
-      font-size:22px;
+      position:absolute; top:-16px; left:50%; transform:translateX(-50%);
+      font-size:22px; z-index:4;
       filter:drop-shadow(0 5px 9px rgba(2,6,23,.28));
-      z-index:4;
     }
-    .target::after {
+    .target::after{
       content:"";
       position:absolute; inset:-12px;
       border-radius:50%;
       border:2px dashed rgba(110,231,183,.45);
       box-shadow:0 0 18px rgba(110,231,183,.20);
-      opacity:.9;
-      z-index:1;
+      opacity:.9; z-index:1;
     }
-    .target-label {
-      position:relative;
-      z-index:3;
-      width:82px; height:82px;
-      border-radius:50%;
+    .monster-goo{
+      position:absolute; background:rgba(22,101,52,.88);
+      border-radius:999px; z-index:2; opacity:.88;
+      filter:drop-shadow(0 4px 8px rgba(2,6,23,.18));
+    }
+    .goo1{ width:22px; height:14px; left:14px; bottom:12px; transform:rotate(-18deg); }
+    .goo2{ width:18px; height:12px; right:16px; bottom:18px; transform:rotate(16deg); }
+    .monster-eye{
+      position:absolute; width:12px; height:12px;
+      background:#fff; border-radius:50%; z-index:2; top:22px;
+      box-shadow:inset 0 0 0 1px rgba(2,6,23,.08);
+    }
+    .monster-eye::after{
+      content:""; position:absolute; width:5px; height:5px; border-radius:50%;
+      background:#111827; top:4px; left:4px;
+    }
+    .eye1{ left:24px; }
+    .eye2{ right:24px; }
+    .target-label{
+      position:relative; z-index:3;
+      width:78px; height:78px; border-radius:50%;
       background:
         radial-gradient(circle at 35% 30%, rgba(255,255,255,1), rgba(255,255,255,.92) 60%, rgba(220,252,231,.95));
       display:flex; align-items:center; justify-content:center;
@@ -294,310 +245,136 @@
       padding:10px;
       border:2px solid rgba(255,255,255,.95);
     }
-
-    .monster-goo{
-      position:absolute;
-      background:rgba(22,101,52,.88);
-      border-radius:999px;
-      z-index:2;
-      opacity:.88;
-      filter:drop-shadow(0 4px 8px rgba(2,6,23,.18));
+    .target.correct-hit{ animation:popGood .28s ease forwards; }
+    .target.wrong-hit{ animation:shakeBad .32s ease; }
+    @keyframes popGood{
+      0%{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+      100%{ transform:translate(-50%,-50%) scale(1.22); opacity:0; }
     }
-    .monster-goo.goo1{ width:22px; height:14px; left:14px; bottom:12px; transform:rotate(-18deg); }
-    .monster-goo.goo2{ width:18px; height:12px; right:16px; bottom:18px; transform:rotate(16deg); }
-    .monster-eye{
-      position:absolute;
-      width:12px; height:12px;
-      background:#fff;
-      border-radius:50%;
-      z-index:2;
-      top:22px;
-      box-shadow:inset 0 0 0 1px rgba(2,6,23,.08);
+    @keyframes shakeBad{
+      0%,100%{ transform:translate(-50%,-50%) rotate(0deg); }
+      20%{ transform:translate(-50%,-50%) rotate(-6deg); }
+      40%{ transform:translate(-50%,-50%) rotate(6deg); }
+      60%{ transform:translate(-50%,-50%) rotate(-5deg); }
+      80%{ transform:translate(-50%,-50%) rotate(5deg); }
     }
-    .monster-eye::after{
-      content:"";
-      position:absolute;
-      width:5px; height:5px;
-      border-radius:50%;
-      background:#111827;
-      top:4px; left:4px;
-    }
-    .monster-eye.eye1{ left:24px; }
-    .monster-eye.eye2{ right:24px; }
-
-    .target.correct-hit { animation:popGood .28s ease forwards; }
-    .target.wrong-hit { animation:shakeBad .32s ease; }
-    @keyframes popGood {
-      0% { transform:translate(-50%,-50%) scale(1); opacity:1; }
-      100% { transform:translate(-50%,-50%) scale(1.25); opacity:0; }
-    }
-    @keyframes shakeBad {
-      0%,100% { transform:translate(-50%,-50%) rotate(0deg); }
-      20% { transform:translate(-50%,-50%) rotate(-6deg); }
-      40% { transform:translate(-50%,-50%) rotate(6deg); }
-      60% { transform:translate(-50%,-50%) rotate(-5deg); }
-      80% { transform:translate(-50%,-50%) rotate(5deg); }
-    }
-
-    .blast, .plus10 {
-      position:absolute; transform:translate(-50%,-50%); z-index:30; pointer-events:none;
-      font-weight:1000; text-shadow:0 10px 24px rgba(2,6,23,.24);
+    .blast,.plus10{
+      position:absolute; transform:translate(-50%,-50%);
+      z-index:30; pointer-events:none; font-weight:1000;
+      text-shadow:0 10px 24px rgba(2,6,23,.24);
       animation:floatUp .62s ease forwards;
     }
-    .blast { font-size:36px; }
-    .plus10 { font-size:24px; color:#bbf7d0; }
-    @keyframes floatUp {
-      0% { opacity:0; transform:translate(-50%,-34%) scale(.78); }
-      15% { opacity:1; }
-      100% { opacity:0; transform:translate(-50%,-120%) scale(1.06); }
+    .blast{ font-size:36px; }
+    .plus10{ font-size:24px; color:#bbf7d0; }
+    @keyframes floatUp{
+      0%{ opacity:0; transform:translate(-50%,-34%) scale(.78); }
+      15%{ opacity:1; }
+      100%{ opacity:0; transform:translate(-50%,-120%) scale(1.06); }
     }
 
-    .overlay {
+    .overlay{
       position:absolute; inset:0; z-index:40;
       display:flex; align-items:center; justify-content:center;
       padding:18px;
       background:linear-gradient(180deg, rgba(2,6,23,.28), rgba(2,6,23,.82));
     }
-    .modal {
-      width:min(100%, 560px);
-      padding:22px;
-      border-radius:28px;
+    .modal{
+      width:min(100%,560px);
+      padding:22px; border-radius:28px;
     }
-    .modal h1, .modal h2 { margin:0 0 10px; line-height:1.08; }
-    .modal h1 { font-size:clamp(28px, 6.5vw, 42px); }
-    .modal h2 { font-size:clamp(24px, 5.8vw, 36px); }
-    .modal p { color:var(--muted); line-height:1.7; font-size:15px; }
-    .pill-row { display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px; }
-    .pill {
+    .modal h1,.modal h2{ margin:0 0 10px; line-height:1.08; }
+    .modal h1{ font-size:clamp(28px,6.5vw,42px); }
+    .modal h2{ font-size:clamp(24px,5.8vw,36px); }
+    .modal p{ color:var(--muted); line-height:1.7; font-size:15px; }
+    .pill-row{ display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px; }
+    .pill{
       padding:10px 14px; border-radius:999px; font-size:14px; font-weight:800;
       background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
     }
-    .modal-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .action-btn, .link-btn, .ghost-btn {
-      border:none; text-decoration:none;
-      display:inline-flex; align-items:center; justify-content:center;
+    .modal-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+    .action-btn,.ghost-btn,.link-btn{
+      border:none; display:inline-flex; align-items:center; justify-content:center;
       padding:14px 18px; border-radius:18px; min-width:148px;
-      font-size:17px; font-weight:900; color:#fff;
-      cursor:pointer;
+      font-size:17px; font-weight:900; color:#fff; cursor:pointer;
     }
-    .action-btn { background:linear-gradient(135deg,#22c55e,#06b6d4); box-shadow:0 10px 24px rgba(6,182,212,.25); }
-    .link-btn { background:linear-gradient(135deg,#22c55e,#16a34a); }
-    .ghost-btn { background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.14); }
-    .summary-grid {
+    .action-btn{ background:linear-gradient(135deg,#22c55e,#06b6d4); }
+    .ghost-btn{ background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.14); }
+    .link-btn{ background:linear-gradient(135deg,#22c55e,#16a34a); text-decoration:none; }
+    .summary-grid{
       display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0 18px;
     }
-    .summary-card {
+    .summary-card{
       padding:14px 12px; border-radius:20px; text-align:center;
       background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
     }
-    .summary-card b { display:block; font-size:24px; margin-bottom:6px; }
-    .hide { display:none !important; }
+    .summary-card b{ display:block; font-size:24px; margin-bottom:6px; }
+    .hide{ display:none !important; }
 
-    @media (max-width: 560px) {
-      .app { width:100vw; }
-      .topbar { padding:calc(8px + var(--safe-top)) 8px 6px; }
-      .hero { padding:12px 12px 10px; border-radius:22px; }
-      .hero-title { font-size:28px; }
-      .hero-sub { max-width:60%; font-size:12px; line-height:1.4; }
-      .hero-tags { gap:6px; margin-top:10px; }
-      .hero-tag { font-size:11px; padding:7px 9px; }
-      .hero-art { width:106px; height:106px; right:6px; top:12px; }
-      .hero-ring { width:78px; height:78px; }
-      .hero-ring::before { height:78px; }
-      .hero-ring::after { width:78px; }
-      .question-panel {
-        grid-template-columns:1fr;
-        gap:8px; padding:10px;
-      }
-      .question-box { min-height:78px; padding:10px 12px; border-radius:18px; }
-      .question-label { font-size:12px; margin-bottom:6px; }
-      .question-text { font-size:19px; }
-      .scoreboard {
-        width:100%; grid-template-columns:repeat(4,1fr); gap:6px;
-      }
-      .metric { min-width:0; padding:8px 4px; border-radius:14px; }
-      .metric .k { font-size:10px; }
-      .metric .v { font-size:17px; }
-      .bottom-ui { padding:0 8px calc(8px + var(--safe-bottom)); }
-      .feedback { min-height:66px; padding:9px 10px; border-radius:18px; }
-      .feedback-badge { width:32px; height:32px; font-size:16px; border-radius:10px; }
-      .feedback strong { font-size:14px; }
-      .feedback p { font-size:11px; }
-      .target { width:100px; height:100px; }
-      .target::before { font-size:18px; top:-12px; }
+    @media (max-width:560px){
+      .app{ width:100vw; }
+      .topbar{ padding:calc(8px + var(--safe-top)) 8px 6px; }
+      .hero{ padding:12px 12px 10px; border-radius:22px; }
+      .hero-title{ font-size:28px; }
+      .hero-sub{ max-width:60%; font-size:12px; line-height:1.4; }
+      .hero-tags{ gap:6px; margin-top:10px; }
+      .hero-tag{ font-size:11px; padding:7px 9px; }
+      .hero-art{ width:106px; height:106px; right:6px; top:12px; }
+      .hero-ring{ width:78px; height:78px; }
+      .hero-ring::before{ height:78px; }
+      .hero-ring::after{ width:78px; }
+      .question-panel{ grid-template-columns:1fr; gap:8px; padding:10px; }
+      .question-box{ min-height:78px; padding:10px 12px; border-radius:18px; }
+      .question-label{ font-size:12px; margin-bottom:6px; }
+      .question-text{ font-size:19px; }
+      .scoreboard{ width:100%; grid-template-columns:repeat(4,1fr); gap:6px; }
+      .metric{ min-width:0; padding:8px 4px; border-radius:14px; }
+      .metric .k{ font-size:10px; }
+      .metric .v{ font-size:17px; }
+      .bottom-ui{ padding:0 8px calc(8px + var(--safe-bottom)); }
+      .feedback{ min-height:66px; padding:9px 10px; border-radius:18px; }
+      .feedback-badge{ width:32px; height:32px; font-size:16px; border-radius:10px; }
+      .feedback strong{ font-size:14px; }
+      .feedback p{ font-size:11px; }
+      .target{ width:98px; height:98px; }
+      .target::before{ font-size:18px; top:-12px; }
       .monster-eye{ width:10px; height:10px; top:20px; }
-      .monster-eye.eye1{ left:20px; }
-      .monster-eye.eye2{ right:20px; }
+      .eye1{ left:20px; } .eye2{ right:20px; }
       .monster-eye::after{ width:4px; height:4px; top:3px; left:3px; }
-      .target-label {
-        width:72px; height:72px; font-size:12px; padding:8px;
-      }
-      .modal { padding:18px; border-radius:22px; }
-      .pill-row { gap:8px; }
-      .pill { width:100%; text-align:center; font-size:13px; }
-      .modal-actions { gap:8px; }
-      .action-btn, .link-btn, .ghost-btn { width:100%; min-width:0; }
-      .summary-grid { grid-template-columns:repeat(2,1fr); }
+      .target-label{ width:70px; height:70px; font-size:12px; padding:8px; }
+      .modal{ padding:18px; border-radius:22px; }
+      .pill-row{ gap:8px; }
+      .pill{ width:100%; text-align:center; font-size:13px; }
+      .modal-actions{ gap:8px; }
+      .action-btn,.ghost-btn,.link-btn{ width:100%; min-width:0; }
+      .summary-grid{ grid-template-columns:repeat(2,1fr); }
     }
-  
-    @media (max-width: 560px) {
-      .topbar{
-        padding:calc(6px + var(--safe-top)) 6px 4px;
-      }
-      .hero{
-        padding:10px 10px 8px;
-        border-radius:18px;
-      }
-      .hero-kicker{
-        font-size:10px;
-        padding:6px 8px;
-      }
-      .hero-title{
-        margin-top:7px;
-        font-size:24px;
-      }
-      .hero-sub{
-        max-width:58%;
-        font-size:11px;
-        line-height:1.32;
-        margin-top:6px;
-      }
-      .hero-tags{
-        gap:5px;
-        margin-top:8px;
-      }
-      .hero-tag{
-        font-size:10px;
-        padding:6px 8px;
-      }
-      .hero-art{
-        width:90px;
-        height:90px;
-        right:4px;
-        top:10px;
-        opacity:.92;
-      }
-      .hero-ring{ width:66px; height:66px; }
-      .hero-ring::before{ height:66px; }
-      .hero-ring::after{ width:66px; }
-
-      .question-panel{
-        margin-top:8px;
-        padding:8px;
-        gap:6px;
-        border-radius:18px;
-      }
-      .question-box{
-        min-height:70px;
-        padding:9px 10px;
-        border-radius:16px;
-      }
-      .question-label{
-        font-size:11px;
-        margin-bottom:4px;
-      }
-      .question-text{
-        font-size:17px;
-        line-height:1.22;
-      }
-      .scoreboard{
-        gap:5px;
-      }
-      .metric{
-        padding:7px 3px;
-        min-width:0;
-        border-radius:12px;
-      }
-      .metric .k{
-        font-size:9px;
-        margin-bottom:2px;
-      }
-      .metric .v{
-        font-size:16px;
-      }
-      .bottom-ui{
-        padding:0 6px calc(6px + var(--safe-bottom));
-      }
-      .feedback{
-        min-height:58px;
-        padding:8px 9px;
-        border-radius:16px;
-      }
-      .feedback-badge{
-        width:28px;
-        height:28px;
-        border-radius:9px;
-        font-size:15px;
-      }
-      .feedback strong{
-        font-size:13px;
-        margin-bottom:2px;
-      }
-      .feedback p{
-        font-size:10px;
-        line-height:1.3;
-        -webkit-line-clamp:1;
-      }
-      .target{
-        width:108px !important;
-        height:108px !important;
-      }
-      .target-label{
-        width:76px !important;
-        height:76px !important;
-        font-size:13px !important;
-      }
-      .modal{
-        padding:16px;
-        border-radius:20px;
-        max-height:86vh;
-        overflow:auto;
-        -webkit-overflow-scrolling:touch;
-      }
-      .summary-grid{
-        gap:8px;
-      }
-      .deco-hill, .deco-badge{
-        opacity:.72;
-      }
-    }
-
-</style>
+  </style>
 </head>
 <body>
-  <div class="app" id="app">
-    <div class="cloud" style="left:6%; top:14%;">☁️</div>
-    <div class="cloud" style="right:8%; top:28%;">☁️</div>
-    <div class="leaf" style="left:7%; bottom:24%;">🍃</div>
-    <div class="leaf" style="right:10%; bottom:18%;">🌿</div>
-    <div class="spark" style="left:14%; top:42%;">♻️</div>
-    <div class="spark" style="right:13%; top:52%;">🌱</div>
-    <div class="spark" style="left:8%; top:62%;">✨</div>
-    <div class="leaf" style="right:16%; top:44%;">🌍</div>
+  <div class="app">
+    <div class="deco cloud" style="left:6%; top:14%;">☁️</div>
+    <div class="deco cloud" style="right:8%; top:28%;">☁️</div>
+    <div class="deco leaf" style="left:7%; bottom:24%;">🍃</div>
+    <div class="deco leaf" style="right:10%; bottom:18%;">🌿</div>
+    <div class="deco spark" style="left:14%; top:42%;">♻️</div>
+    <div class="deco spark" style="right:13%; top:52%;">🌱</div>
+    <div class="deco spark" style="left:8%; top:62%;">✨</div>
+    <div class="deco leaf" style="right:16%; top:44%;">🌍</div>
+    <div class="deco spark" style="left:22%; top:10%;">🛡️</div>
+    <div class="deco spark" style="right:24%; bottom:12%;">🍎</div>
 
-    <div class="cloud" style="left:18%; top:8%;">☁️</div>
-    <div class="cloud" style="right:22%; top:10%;">☁️</div>
-    <div class="leaf" style="left:3%; top:30%;">🌿</div>
-    <div class="leaf" style="right:4%; top:34%;">🍃</div>
-    <div class="spark" style="left:6%; top:76%;">✨</div>
-    <div class="spark" style="right:9%; top:72%;">♻️</div>
-    <div class="spark" style="left:20%; bottom:12%;">🌍</div>
-    <div class="spark" style="right:24%; bottom:10%;">🛡️</div>
-    <div class="spark" style="left:32%; top:18%;">🌱</div>
+    <div id="arena"></div>
 
-
-    <div class="deco-hill left"></div><div class="deco-hill right"></div><div class="deco-badge" style="left:10px; bottom:76px;">🌱</div><div class="deco-badge" style="right:18px; bottom:84px;">♻️</div><div id="arena"></div>
-
-    <div class="topbar" id="topbar">
+    <div class="topbar">
       <div class="glass hero">
-        <div class="hero-kicker">🌍 守護地球環保互動任務</div>
-        <div class="hero-title">分類炸彈<span class="accent">大挑戰</span></div>
-        <div class="hero-sub">化身環保戰士，鎖定污染怪物身上的分類標靶，發動淨化攻擊，守護地球不被污染擴散。</div>
+        <div class="hero-kicker">🌍 守護地球劇情任務</div>
+        <div class="hero-title">環保戰士<span class="accent">廚餘淨化任務</span></div>
+        <div class="hero-sub">地球遭到廚餘污染怪物入侵。你要依序完成 10 個固定任務，學會正確廚餘回收流程，才能守住地球防線。</div>
         <div class="hero-tags">
-          <div class="hero-tag">✨ 淨化攻擊 +10 分</div>
-          <div class="hero-tag">💀 污染擴散 -1 血</div>
-          <div class="hero-tag">⏳ 40 秒守護任務</div>
-          <div class="hero-tag">🏅 100 分英雄門檻</div>
+          <div class="hero-tag">📖 固定 10 題劇情任務</div>
+          <div class="hero-tag">⏳ 無時間限制</div>
+          <div class="hero-tag">❤️ 守護力 5 點</div>
+          <div class="hero-tag">✨ 答對啟動淨化攻擊</div>
         </div>
         <div class="hero-art">
           <div class="hero-ring"></div>
@@ -607,252 +384,239 @@
 
       <div class="glass question-panel">
         <div class="question-box">
-          <div class="question-label">本回合污染警報</div>
-          <div class="question-text" id="questionText">準備守護地球</div>
+          <div class="question-label">目前任務</div>
+          <div class="question-text" id="questionText">準備展開廚餘淨化任務</div>
         </div>
         <div class="scoreboard">
-          <div class="metric"><div class="k">剩餘時間</div><div class="v" id="timeValue">40</div></div>
-          <div class="metric"><div class="k">目前分數</div><div class="v" id="scoreValue">0</div></div>
+          <div class="metric"><div class="k">任務進度</div><div class="v" id="progressValue">1/10</div></div>
+          <div class="metric"><div class="k">淨化分數</div><div class="v" id="scoreValue">0</div></div>
           <div class="metric"><div class="k">守護力</div><div class="v" id="lifeValue">5</div></div>
-          <div class="metric"><div class="k">達標門檻</div><div class="v">100</div></div>
+          <div class="metric"><div class="k">任務總數</div><div class="v">10</div></div>
         </div>
       </div>
     </div>
 
-    <div class="bottom-ui" id="bottomUi">
+    <div class="bottom-ui">
       <div class="glass feedback">
-        <div class="feedback-badge" id="feedbackBadge">🎯</div>
+        <div class="feedback-badge" id="feedbackBadge">📖</div>
         <div>
-          <strong id="feedbackTitle">準備出任務</strong>
-          <p id="feedbackText">點「開始守護」後，直接點擊污染怪物身上的正確分類標靶，發動淨化攻擊。</p>
+          <strong id="feedbackTitle">劇情開始</strong>
+          <p id="feedbackText">這次不再使用隨機題庫。請依照故事進度，完成 10 題固定的廚餘回收任務。</p>
         </div>
       </div>
     </div>
 
     <div class="overlay" id="startOverlay">
       <div class="glass modal">
-        <h1>環保戰士守護地球</h1>
-        <p>這次你將化身環保戰士。三個答案會以污染怪物身上的分類標靶加速移動，請直接點擊你認為正確的標靶，發動淨化攻擊。</p>
+        <h1>🌍 廚餘淨化任務啟動</h1>
+        <p>污染怪物正利用錯誤的廚餘處理方式擴散危機。你是環保戰士，必須依序破解 10 個固定任務，學會廚餘回收流程與注意事項，才能讓地球恢復乾淨。</p>
         <div class="pill-row">
-          <div class="pill">🛡️ 直接點擊淨化</div>
-          <div class="pill">⚡ 標靶加速移動</div>
-          <div class="pill">❤️ 共有 5 點守護力</div>
-          <div class="pill">🏁 100 分可解鎖獎勵</div>
+          <div class="pill">📖 固定 10 題</div>
+          <div class="pill">🎯 直接點擊標靶作答</div>
+          <div class="pill">💀 答錯會污染擴散</div>
+          <div class="pill">⏳ 無時間限制</div>
+          <div class="pill">🎁 完成任務可抽獎</div>
         </div>
         <div class="modal-actions">
-          <button class="action-btn" id="startBtn">開始守護</button>
+          <button class="action-btn" id="startBtn">開始任務</button>
         </div>
       </div>
     </div>
 
     <div class="overlay hide" id="endOverlay">
       <div class="glass modal">
-        <h2 id="endTitle">守護任務完成</h2>
-        <p id="endText">你已完成本次守護地球任務。</p>
+        <h2 id="endTitle">任務完成</h2>
+        <p id="endText">你已完成本次淨化任務。</p>
         <div class="summary-grid">
+          <div class="summary-card"><b id="finalProgress">0/10</b>任務進度</div>
           <div class="summary-card"><b id="finalScore">0</b>淨化分數</div>
           <div class="summary-card"><b id="finalCorrect">0</b>淨化成功</div>
-          <div class="summary-card"><b id="finalWrong">0</b>污染擴散</div>
           <div class="summary-card"><b id="finalLife">0</b>剩餘守護力</div>
         </div>
-        <div class="modal-actions" id="rewardActions"></div>
+        <div class="modal-actions" id="rewardActions">
+          <button class="ghost-btn" id="restartBtn">再守護一次</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
+    const LINE_DRAW_URL = "https://line.me/R/ti/p/@yourlineid"; // 請改成你的 LINE 抽獎連結
 
-    function setViewportUnit() {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-    }
-
-    function getPlayBounds() {
-      const arenaRect = arena.getBoundingClientRect();
-      const topbarRect = document.getElementById('topbar').getBoundingClientRect();
-      const bottomRect = document.getElementById('bottomUi').getBoundingClientRect();
-      const mobile = window.innerWidth <= 560;
-      const padX = mobile ? 64 : 72;
-      const padBottom = mobile ? 74 : 84;
-      const padTop = mobile ? 44 : 54;
-      return {
-        left: padX,
-        right: Math.max(padX, arenaRect.width - padX),
-        top: Math.max(padTop, topbarRect.bottom + (mobile ? 18 : 22)),
-        bottom: Math.max(padTop + 120, bottomRect.top - padBottom)
-      };
-    }
-
-    function refreshBounds() {
-      const b = getPlayBounds();
-      state.activeTargets.forEach(t => {
-        t.minX = b.left;
-        t.maxX = b.right;
-        t.minY = b.top;
-        t.maxY = b.bottom;
-        t.x = Math.min(Math.max(t.x, t.minX), t.maxX);
-        t.y = Math.min(Math.max(t.y, t.minY), t.maxY);
-        t.el.style.left = t.x + 'px';
-        t.el.style.top = t.y + 'px';
-      });
-    }
-
-
-    const CONFIG = {
-      heroName: '環保戰士',
-      gameSeconds: 40,
-      passScore: 100,
-      startLives: 5,
-      lineUrl: "https://line.me/R/ti/p/@yourlineid",
-      moveSpeedBase: 56,   // px/sec
-      moveSpeedRange: 24   // px/sec
-    };
-
-    const QUESTION_BANK = [{"question": "用過的行動電源應如何處理？", "options": [{"key": "A", "text": "一般垃圾"}, {"key": "B", "text": "資源回收車"}, {"key": "C", "text": "專門回收點"}], "correct": "C", "explanation": "鋰電池易起火需專門回收", "category": "鋰電池"}, {"question": "電池可以丟一般垃圾嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "B", "explanation": "易引發火災", "category": "鋰電池"}, {"question": "瓦斯罐丟棄前需？", "options": [{"key": "A", "text": "直接丟"}, {"key": "B", "text": "排空氣體"}, {"key": "C", "text": "加水"}], "correct": "B", "explanation": "避免爆炸", "category": "瓦斯罐"}, {"question": "廢燈管應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "回收點"}, {"key": "C", "text": "打破丟"}], "correct": "B", "explanation": "含汞有毒", "category": "燈管"}, {"question": "農藥罐應如何回收？", "options": [{"key": "A", "text": "清洗後回收"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "埋土"}], "correct": "A", "explanation": "避免污染", "category": "農藥罐"}, {"question": "滅火器應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "專業回收"}, {"key": "C", "text": "丟河"}], "correct": "B", "explanation": "高壓容器", "category": "滅火器"}, {"question": "噴霧罐回收前需？", "options": [{"key": "A", "text": "排空"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "加熱"}], "correct": "A", "explanation": "避免爆炸", "category": "噴霧罐"}, {"question": "電池應回收於？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "垃圾車"}, {"key": "C", "text": "水溝"}], "correct": "A", "explanation": "設有回收點", "category": "電池"}, {"question": "油漆罐應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "倒掉"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "特殊處理", "category": "油漆罐"}, {"question": "舊手機應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "含重金屬", "category": "3C"}, {"question": "用過的行動電源應如何處理？", "options": [{"key": "A", "text": "一般垃圾"}, {"key": "B", "text": "資源回收車"}, {"key": "C", "text": "專門回收點"}], "correct": "C", "explanation": "鋰電池易起火需專門回收", "category": "鋰電池"}, {"question": "電池可以丟一般垃圾嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "B", "explanation": "易引發火災", "category": "鋰電池"}, {"question": "瓦斯罐丟棄前需？", "options": [{"key": "A", "text": "直接丟"}, {"key": "B", "text": "排空氣體"}, {"key": "C", "text": "加水"}], "correct": "B", "explanation": "避免爆炸", "category": "瓦斯罐"}, {"question": "廢燈管應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "回收點"}, {"key": "C", "text": "打破丟"}], "correct": "B", "explanation": "含汞有毒", "category": "燈管"}, {"question": "農藥罐應如何回收？", "options": [{"key": "A", "text": "清洗後回收"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "埋土"}], "correct": "A", "explanation": "避免污染", "category": "農藥罐"}, {"question": "滅火器應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "專業回收"}, {"key": "C", "text": "丟河"}], "correct": "B", "explanation": "高壓容器", "category": "滅火器"}, {"question": "噴霧罐回收前需？", "options": [{"key": "A", "text": "排空"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "加熱"}], "correct": "A", "explanation": "避免爆炸", "category": "噴霧罐"}, {"question": "電池應回收於？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "垃圾車"}, {"key": "C", "text": "水溝"}], "correct": "A", "explanation": "設有回收點", "category": "電池"}, {"question": "油漆罐應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "倒掉"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "特殊處理", "category": "油漆罐"}, {"question": "舊手機應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "含重金屬", "category": "3C"}, {"question": "用過的行動電源應如何處理？", "options": [{"key": "A", "text": "一般垃圾"}, {"key": "B", "text": "資源回收車"}, {"key": "C", "text": "專門回收點"}], "correct": "C", "explanation": "鋰電池易起火需專門回收", "category": "鋰電池"}, {"question": "電池可以丟一般垃圾嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "B", "explanation": "易引發火災", "category": "鋰電池"}, {"question": "瓦斯罐丟棄前需？", "options": [{"key": "A", "text": "直接丟"}, {"key": "B", "text": "排空氣體"}, {"key": "C", "text": "加水"}], "correct": "B", "explanation": "避免爆炸", "category": "瓦斯罐"}, {"question": "廢燈管應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "回收點"}, {"key": "C", "text": "打破丟"}], "correct": "B", "explanation": "含汞有毒", "category": "燈管"}, {"question": "農藥罐應如何回收？", "options": [{"key": "A", "text": "清洗後回收"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "埋土"}], "correct": "A", "explanation": "避免污染", "category": "農藥罐"}, {"question": "滅火器應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "專業回收"}, {"key": "C", "text": "丟河"}], "correct": "B", "explanation": "高壓容器", "category": "滅火器"}, {"question": "噴霧罐回收前需？", "options": [{"key": "A", "text": "排空"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "加熱"}], "correct": "A", "explanation": "避免爆炸", "category": "噴霧罐"}, {"question": "電池應回收於？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "垃圾車"}, {"key": "C", "text": "水溝"}], "correct": "A", "explanation": "設有回收點", "category": "電池"}, {"question": "油漆罐應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "倒掉"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "特殊處理", "category": "油漆罐"}, {"question": "舊手機應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "含重金屬", "category": "3C"}, {"question": "用過的行動電源應如何處理？", "options": [{"key": "A", "text": "一般垃圾"}, {"key": "B", "text": "資源回收車"}, {"key": "C", "text": "專門回收點"}], "correct": "C", "explanation": "鋰電池易起火需專門回收", "category": "鋰電池"}, {"question": "電池可以丟一般垃圾嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "B", "explanation": "易引發火災", "category": "鋰電池"}, {"question": "瓦斯罐丟棄前需？", "options": [{"key": "A", "text": "直接丟"}, {"key": "B", "text": "排空氣體"}, {"key": "C", "text": "加水"}], "correct": "B", "explanation": "避免爆炸", "category": "瓦斯罐"}, {"question": "廢燈管應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "回收點"}, {"key": "C", "text": "打破丟"}], "correct": "B", "explanation": "含汞有毒", "category": "燈管"}, {"question": "農藥罐應如何回收？", "options": [{"key": "A", "text": "清洗後回收"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "埋土"}], "correct": "A", "explanation": "避免污染", "category": "農藥罐"}, {"question": "滅火器應如何處理？", "options": [{"key": "A", "text": "垃圾"}, {"key": "B", "text": "專業回收"}, {"key": "C", "text": "丟河"}], "correct": "B", "explanation": "高壓容器", "category": "滅火器"}, {"question": "噴霧罐回收前需？", "options": [{"key": "A", "text": "排空"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "加熱"}], "correct": "A", "explanation": "避免爆炸", "category": "噴霧罐"}, {"question": "電池應回收於？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "垃圾車"}, {"key": "C", "text": "水溝"}], "correct": "A", "explanation": "設有回收點", "category": "電池"}, {"question": "油漆罐應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "倒掉"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "特殊處理", "category": "油漆罐"}, {"question": "舊手機應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "含重金屬", "category": "3C"}, {"question": "寶特瓶回收前需？", "options": [{"key": "A", "text": "清洗壓扁"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "剪碎"}], "correct": "A", "explanation": "提升回收品質", "category": "清潔"}, {"question": "紙餐盒應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "一般垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "B", "explanation": "沾油不可回收", "category": "分類"}, {"question": "鋁罐應？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "可再利用", "category": "分類"}, {"question": "玻璃應如何丟棄？", "options": [{"key": "A", "text": "包好"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "丟河"}], "correct": "A", "explanation": "避免受傷", "category": "分類"}, {"question": "塑膠袋乾淨可？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "視情況", "category": "分類"}, {"question": "紙箱回收前需？", "options": [{"key": "A", "text": "折疊"}, {"key": "B", "text": "整箱丟"}, {"key": "C", "text": "泡水"}], "correct": "A", "explanation": "節省空間", "category": "整理"}, {"question": "廚餘應？", "options": [{"key": "A", "text": "廚餘桶"}, {"key": "B", "text": "回收"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "分類處理", "category": "分類"}, {"question": "寶特瓶回收前需？", "options": [{"key": "A", "text": "清洗壓扁"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "剪碎"}], "correct": "A", "explanation": "提升回收品質", "category": "清潔"}, {"question": "紙餐盒應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "一般垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "B", "explanation": "沾油不可回收", "category": "分類"}, {"question": "鋁罐應？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "可再利用", "category": "分類"}, {"question": "玻璃應如何丟棄？", "options": [{"key": "A", "text": "包好"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "丟河"}], "correct": "A", "explanation": "避免受傷", "category": "分類"}, {"question": "塑膠袋乾淨可？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "視情況", "category": "分類"}, {"question": "紙箱回收前需？", "options": [{"key": "A", "text": "折疊"}, {"key": "B", "text": "整箱丟"}, {"key": "C", "text": "泡水"}], "correct": "A", "explanation": "節省空間", "category": "整理"}, {"question": "廚餘應？", "options": [{"key": "A", "text": "廚餘桶"}, {"key": "B", "text": "回收"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "分類處理", "category": "分類"}, {"question": "寶特瓶回收前需？", "options": [{"key": "A", "text": "清洗壓扁"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "剪碎"}], "correct": "A", "explanation": "提升回收品質", "category": "清潔"}, {"question": "紙餐盒應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "一般垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "B", "explanation": "沾油不可回收", "category": "分類"}, {"question": "鋁罐應？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "可再利用", "category": "分類"}, {"question": "玻璃應如何丟棄？", "options": [{"key": "A", "text": "包好"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "丟河"}], "correct": "A", "explanation": "避免受傷", "category": "分類"}, {"question": "塑膠袋乾淨可？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "視情況", "category": "分類"}, {"question": "紙箱回收前需？", "options": [{"key": "A", "text": "折疊"}, {"key": "B", "text": "整箱丟"}, {"key": "C", "text": "泡水"}], "correct": "A", "explanation": "節省空間", "category": "整理"}, {"question": "廚餘應？", "options": [{"key": "A", "text": "廚餘桶"}, {"key": "B", "text": "回收"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "分類處理", "category": "分類"}, {"question": "寶特瓶回收前需？", "options": [{"key": "A", "text": "清洗壓扁"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "剪碎"}], "correct": "A", "explanation": "提升回收品質", "category": "清潔"}, {"question": "紙餐盒應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "一般垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "B", "explanation": "沾油不可回收", "category": "分類"}, {"question": "鋁罐應？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "可再利用", "category": "分類"}, {"question": "玻璃應如何丟棄？", "options": [{"key": "A", "text": "包好"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "丟河"}], "correct": "A", "explanation": "避免受傷", "category": "分類"}, {"question": "塑膠袋乾淨可？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "視情況", "category": "分類"}, {"question": "紙箱回收前需？", "options": [{"key": "A", "text": "折疊"}, {"key": "B", "text": "整箱丟"}, {"key": "C", "text": "泡水"}], "correct": "A", "explanation": "節省空間", "category": "整理"}, {"question": "廚餘應？", "options": [{"key": "A", "text": "廚餘桶"}, {"key": "B", "text": "回收"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "分類處理", "category": "分類"}, {"question": "寶特瓶回收前需？", "options": [{"key": "A", "text": "清洗壓扁"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "剪碎"}], "correct": "A", "explanation": "提升回收品質", "category": "清潔"}, {"question": "紙餐盒應如何處理？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "一般垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "B", "explanation": "沾油不可回收", "category": "分類"}, {"question": "鋁罐應？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "可再利用", "category": "分類"}, {"question": "玻璃應如何丟棄？", "options": [{"key": "A", "text": "包好"}, {"key": "B", "text": "直接丟"}, {"key": "C", "text": "丟河"}], "correct": "A", "explanation": "避免受傷", "category": "分類"}, {"question": "塑膠袋乾淨可？", "options": [{"key": "A", "text": "回收"}, {"key": "B", "text": "垃圾"}, {"key": "C", "text": "廚餘"}], "correct": "A", "explanation": "視情況", "category": "分類"}, {"question": "紙箱回收前需？", "options": [{"key": "A", "text": "折疊"}, {"key": "B", "text": "整箱丟"}, {"key": "C", "text": "泡水"}], "correct": "A", "explanation": "節省空間", "category": "整理"}, {"question": "廚餘應？", "options": [{"key": "A", "text": "廚餘桶"}, {"key": "B", "text": "回收"}, {"key": "C", "text": "垃圾"}], "correct": "A", "explanation": "分類處理", "category": "分類"}, {"question": "回收的目的是？", "options": [{"key": "A", "text": "減少污染"}, {"key": "B", "text": "增加垃圾"}, {"key": "C", "text": "沒差"}], "correct": "A", "explanation": "環保核心", "category": "概念"}, {"question": "回收可節省能源嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "A", "explanation": "減少開採", "category": "概念"}, {"question": "電池回收點在哪？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "餐廳"}, {"key": "C", "text": "公園"}], "correct": "A", "explanation": "常見設點", "category": "管道"}, {"question": "減塑方式？", "options": [{"key": "A", "text": "重複使用"}, {"key": "B", "text": "丟掉"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "減量", "category": "概念"}, {"question": "回收需分類嗎？", "options": [{"key": "A", "text": "需要"}, {"key": "B", "text": "不需要"}], "correct": "A", "explanation": "提升效率", "category": "概念"}, {"question": "回收的目的是？", "options": [{"key": "A", "text": "減少污染"}, {"key": "B", "text": "增加垃圾"}, {"key": "C", "text": "沒差"}], "correct": "A", "explanation": "環保核心", "category": "概念"}, {"question": "回收可節省能源嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "A", "explanation": "減少開採", "category": "概念"}, {"question": "電池回收點在哪？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "餐廳"}, {"key": "C", "text": "公園"}], "correct": "A", "explanation": "常見設點", "category": "管道"}, {"question": "減塑方式？", "options": [{"key": "A", "text": "重複使用"}, {"key": "B", "text": "丟掉"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "減量", "category": "概念"}, {"question": "回收需分類嗎？", "options": [{"key": "A", "text": "需要"}, {"key": "B", "text": "不需要"}], "correct": "A", "explanation": "提升效率", "category": "概念"}, {"question": "回收的目的是？", "options": [{"key": "A", "text": "減少污染"}, {"key": "B", "text": "增加垃圾"}, {"key": "C", "text": "沒差"}], "correct": "A", "explanation": "環保核心", "category": "概念"}, {"question": "回收可節省能源嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "A", "explanation": "減少開採", "category": "概念"}, {"question": "電池回收點在哪？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "餐廳"}, {"key": "C", "text": "公園"}], "correct": "A", "explanation": "常見設點", "category": "管道"}, {"question": "減塑方式？", "options": [{"key": "A", "text": "重複使用"}, {"key": "B", "text": "丟掉"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "減量", "category": "概念"}, {"question": "回收需分類嗎？", "options": [{"key": "A", "text": "需要"}, {"key": "B", "text": "不需要"}], "correct": "A", "explanation": "提升效率", "category": "概念"}, {"question": "回收的目的是？", "options": [{"key": "A", "text": "減少污染"}, {"key": "B", "text": "增加垃圾"}, {"key": "C", "text": "沒差"}], "correct": "A", "explanation": "環保核心", "category": "概念"}, {"question": "回收可節省能源嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "A", "explanation": "減少開採", "category": "概念"}, {"question": "電池回收點在哪？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "餐廳"}, {"key": "C", "text": "公園"}], "correct": "A", "explanation": "常見設點", "category": "管道"}, {"question": "減塑方式？", "options": [{"key": "A", "text": "重複使用"}, {"key": "B", "text": "丟掉"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "減量", "category": "概念"}, {"question": "回收需分類嗎？", "options": [{"key": "A", "text": "需要"}, {"key": "B", "text": "不需要"}], "correct": "A", "explanation": "提升效率", "category": "概念"}, {"question": "回收的目的是？", "options": [{"key": "A", "text": "減少污染"}, {"key": "B", "text": "增加垃圾"}, {"key": "C", "text": "沒差"}], "correct": "A", "explanation": "環保核心", "category": "概念"}, {"question": "回收可節省能源嗎？", "options": [{"key": "A", "text": "可以"}, {"key": "B", "text": "不可以"}], "correct": "A", "explanation": "減少開採", "category": "概念"}, {"question": "電池回收點在哪？", "options": [{"key": "A", "text": "超商"}, {"key": "B", "text": "餐廳"}, {"key": "C", "text": "公園"}], "correct": "A", "explanation": "常見設點", "category": "管道"}, {"question": "減塑方式？", "options": [{"key": "A", "text": "重複使用"}, {"key": "B", "text": "丟掉"}, {"key": "C", "text": "焚燒"}], "correct": "A", "explanation": "減量", "category": "概念"}, {"question": "回收需分類嗎？", "options": [{"key": "A", "text": "需要"}, {"key": "B", "text": "不需要"}], "correct": "A", "explanation": "提升效率", "category": "概念"}];
+    const QUESTIONS = [
+      {
+        question: "第一波污染怪物來襲：回收廚餘前，第一步最重要的是什麼？",
+        options: ["直接整包丟進回收桶", "先瀝乾水分", "和一般垃圾混在一起"],
+        answer: 1,
+        story: "廚餘若含太多湯水，容易增加清運與處理負擔。"
+      },
+      {
+        question: "任務二：吃剩的飯菜，最適合的分類方式是？",
+        options: ["一般垃圾", "資源回收", "廚餘回收"],
+        answer: 2,
+        story: "可腐敗、可回收再利用的剩飯剩菜，通常屬於廚餘。"
+      },
+      {
+        question: "任務三：水果皮與果核出現時，你要怎麼判斷？",
+        options: ["屬於廚餘", "屬於塑膠回收", "屬於一般垃圾"],
+        answer: 0,
+        story: "水果皮、果核多屬廚餘，是常見的回收項目。"
+      },
+      {
+        question: "任務四：裝廚餘的塑膠袋，應該一起丟進廚餘桶嗎？",
+        options: ["可以，一起丟最方便", "不可以，要先分開", "只要袋子乾淨就都可以"],
+        answer: 1,
+        story: "塑膠袋不是廚餘，應先分開，避免影響後續處理。"
+      },
+      {
+        question: "任務五：吃剩的湯湯水水處理前，較好的做法是？",
+        options: ["整碗直接倒進廚餘桶", "先瀝掉多餘湯汁", "加衛生紙一起丟"],
+        answer: 1,
+        story: "先把多餘湯汁瀝掉，能讓廚餘回收更順利。"
+      },
+      {
+        question: "任務六：廚餘回收最重要的觀念之一是什麼？",
+        options: ["能分就分，不和垃圾混裝", "全部丟垃圾最省事", "看心情分類就好"],
+        answer: 0,
+        story: "廚餘與垃圾混裝，會降低回收品質，也增加污染風險。"
+      },
+      {
+        question: "任務七：有明顯食物殘渣的紙餐盒，較適合怎麼處理？",
+        options: ["直接當資源回收", "先看是否需清潔，未能回收時作一般垃圾", "全部算廚餘"],
+        answer: 1,
+        story: "紙餐盒若髒污嚴重、無法回收，通常不直接算廚餘。"
+      },
+      {
+        question: "任務八：進行廚餘分類時，最需要避免哪一種情況？",
+        options: ["把塑膠、免洗餐具混進廚餘", "把菜葉集中回收", "先倒乾水分"],
+        answer: 0,
+        story: "異物混入廚餘，會造成回收處理困難。"
+      },
+      {
+        question: "任務九：正確做好廚餘回收，對環境的幫助是？",
+        options: ["增加污染", "沒有差別", "減少浪費並促進再利用"],
+        answer: 2,
+        story: "正確回收能減少浪費，並讓資源有機會再利用。"
+      },
+      {
+        question: "最終任務：完成廚餘分類後，最好的結語觀念是？",
+        options: ["只做一次就夠", "平常持續落實分類", "分類太麻煩可以放棄"],
+        answer: 1,
+        story: "養成習慣，才是真正守護地球的方式。"
+      }
+    ];
 
     const arena = document.getElementById('arena');
     const questionText = document.getElementById('questionText');
+    const progressValue = document.getElementById('progressValue');
     const scoreValue = document.getElementById('scoreValue');
     const lifeValue = document.getElementById('lifeValue');
-    const timeValue = document.getElementById('timeValue');
     const feedbackBadge = document.getElementById('feedbackBadge');
     const feedbackTitle = document.getElementById('feedbackTitle');
     const feedbackText = document.getElementById('feedbackText');
     const startOverlay = document.getElementById('startOverlay');
     const endOverlay = document.getElementById('endOverlay');
-    const startBtn = document.getElementById('startBtn');
-    const rewardActions = document.getElementById('rewardActions');
 
     let state = {
+      index: 0,
       score: 0,
-      lives: CONFIG.startLives,
-      timeLeft: CONFIG.gameSeconds,
+      lives: 5,
       correct: 0,
-      wrong: 0,
       playing: false,
-      currentQuestion: null,
       activeTargets: [],
-      timerId: null,
       animationId: null,
-      lastFrameTs: 0
+      lastFrameTs: 0,
+      answerLocked: false
     };
 
-    function shuffle(arr) {
+    function shuffle(arr){
       const a = [...arr];
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
       }
       return a;
     }
 
-    function setFeedback(icon, title, text) {
+    function setFeedback(icon, title, text){
       feedbackBadge.textContent = icon;
       feedbackTitle.textContent = title;
       feedbackText.textContent = text || "";
     }
 
-    function updateStats() {
+    function updateStats(){
+      const shownProgress = state.playing
+        ? Math.min(state.index + 1, QUESTIONS.length)
+        : Math.min(state.index, QUESTIONS.length);
+      progressValue.textContent = `${shownProgress}/${QUESTIONS.length}`;
       scoreValue.textContent = state.score;
       lifeValue.textContent = state.lives;
-      timeValue.textContent = state.timeLeft;
     }
 
-    function clearTargets() {
-      state.activeTargets.forEach(t => t.el.remove());
-      state.activeTargets = [];
-    }
-
-    function randomQuestion() {
-      return QUESTION_BANK[Math.floor(Math.random() * QUESTION_BANK.length)];
-    }
-
-    function buildQuestionOptions(q) {
-      let options = q.options.filter(o => o && o.text && o.text.trim());
-      // Ensure exactly 3 targets if possible
-      if (options.length >= 3) {
-        return shuffle(options).slice(0, 3);
-      }
-      // Add distractors from other questions
-      const pool = [];
-      QUESTION_BANK.forEach(item => {
-        item.options.forEach(opt => {
-          if (!opt || !opt.text) return;
-          if (options.some(x => x.text === opt.text)) return;
-          pool.push({ key: "", text: opt.text });
-        });
+    function clearTargets(){
+      state.activeTargets.forEach(t => {
+        try { t.el.remove(); } catch(e) {}
       });
-      const mixed = [...options];
-      for (const extra of shuffle(pool)) {
-        if (mixed.length >= 3) break;
-        mixed.push(extra);
-      }
-      return shuffle(mixed).slice(0, 3);
+      state.activeTargets = [];
+      arena.querySelectorAll('.target, .blast, .plus10').forEach(el => el.remove());
     }
 
-    function nextQuestion() {
+    function spawnFloating(x, y, good=true){
+      const div = document.createElement('div');
+      div.className = good ? 'plus10' : 'blast';
+      div.textContent = good ? '+10' : '💥';
+      div.style.left = x + 'px';
+      div.style.top = y + 'px';
+      arena.appendChild(div);
+      setTimeout(() => div.remove(), 650);
+    }
+
+    function buildQuestion(){
       clearTargets();
-      const q = randomQuestion();
-      state.currentQuestion = {
-        ...q,
-        activeOptions: buildQuestionOptions(q)
-      };
+      state.answerLocked = false;
+      const q = QUESTIONS[state.index];
       questionText.textContent = q.question;
-      const explain = q.explanation ? `淨化提示：${q.explanation}` : "請點擊你認為正確的分類標靶，發動淨化攻擊。";
-      setFeedback("🎯", "鎖定污染怪物", explain);
+      updateStats();
+      setFeedback("📘", `任務 ${state.index + 1}／10`, q.story);
 
       const rect = arena.getBoundingClientRect();
-      const bounds = getPlayBounds();
-      const topLimit = bounds.top;
-      const bottomLimit = bounds.bottom;
-      const leftLimit = bounds.left;
-      const rightLimit = bounds.right;
+      const topLimit = Math.max(270, rect.height * 0.40);
+      const bottomLimit = rect.height - 120;
+      const leftLimit = 72;
+      const rightLimit = rect.width - 72;
 
-      const midY = topLimit + Math.max(90, (bottomLimit - topLimit) * 0.52);
+      const order = shuffle([0,1,2]);
       const positions = [
-        { x: leftLimit + (rightLimit - leftLimit) * 0.18, y: topLimit + (bottomLimit - topLimit) * 0.28 },
-        { x: leftLimit + (rightLimit - leftLimit) * 0.50, y: midY },
-        { x: leftLimit + (rightLimit - leftLimit) * 0.82, y: topLimit + (bottomLimit - topLimit) * 0.34 }
+        {x: rect.width * 0.25, y: rect.height * 0.58},
+        {x: rect.width * 0.50, y: rect.height * 0.70},
+        {x: rect.width * 0.75, y: rect.height * 0.58}
       ];
 
-      state.currentQuestion.activeOptions.forEach((opt, index) => {
+      order.forEach((optIndex, i) => {
         const target = document.createElement('button');
         target.className = 'target';
         target.type = 'button';
-        target.setAttribute('aria-label', opt.text);
-        target.innerHTML = `<span class="monster-goo goo1"></span><span class="monster-goo goo2"></span><span class="monster-eye eye1"></span><span class="monster-eye eye2"></span><span class="target-label">${opt.text}</span>`;
+        target.innerHTML = `<span class="monster-goo goo1"></span><span class="monster-goo goo2"></span><span class="monster-eye eye1"></span><span class="monster-eye eye2"></span><span class="target-label">${q.options[optIndex]}</span>`;
 
-        const pos = positions[index] || {
-          x: leftLimit + Math.random() * (rightLimit - leftLimit),
-          y: topLimit + Math.random() * (bottomLimit - topLimit)
-        };
-
-        const speed = CONFIG.moveSpeedBase + Math.random() * CONFIG.moveSpeedRange;
         const angle = Math.random() * Math.PI * 2;
+        const speed = 24 + Math.random() * 10;
         const data = {
           el: target,
-          x: pos.x,
-          y: pos.y,
+          x: positions[i].x,
+          y: positions[i].y,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          radius: window.innerWidth <= 560 ? 42 : 48,
-          minX: leftLimit,
-          maxX: rightLimit,
-          minY: topLimit,
-          maxY: bottomLimit,
-          option: opt
+          minX: leftLimit, maxX: rightLimit, minY: topLimit, maxY: bottomLimit,
+          isCorrect: optIndex === q.answer
         };
 
-        const fire = (ev) => {
+        const choose = (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          if (!state.playing) return;
-          handleAnswer(data);
+          if(!state.playing) return;
+          handleAnswer(data, q);
         };
-        target.addEventListener('click', fire, { passive: false });
-        target.addEventListener('touchstart', fire, { passive: false });
-        target.addEventListener('touchend', fire, { passive: false });
-        target.addEventListener('pointerup', fire, { passive: false });
+        target.addEventListener('pointerup', choose, {passive:false});
 
         target.style.left = data.x + 'px';
         target.style.top = data.y + 'px';
@@ -861,64 +625,62 @@
       });
     }
 
-    function spawnFloating(x, y, type) {
-      const div = document.createElement('div');
-      div.className = type === 'good' ? 'plus10' : 'blast';
-      div.textContent = type === 'good' ? '+10' : '💥';
-      div.style.left = x + 'px';
-      div.style.top = y + 'px';
-      arena.appendChild(div);
-      setTimeout(() => div.remove(), 650);
-    }
+    function handleAnswer(targetData, q){
+      if(!state.playing || state.answerLocked) return;
+      state.answerLocked = true;
 
-    function handleAnswer(targetData) {
-      if (!state.playing || !state.currentQuestion) return;
-      const isCorrect = targetData.option.key === state.currentQuestion.correct;
-      const x = targetData.x;
-      const y = targetData.y;
-
-      if (isCorrect) {
+      if(targetData.isCorrect){
         state.score += 10;
         state.correct += 1;
         targetData.el.classList.add('correct-hit');
-        spawnFloating(x, y, 'good');
-        setFeedback("✅", "淨化成功了！", state.currentQuestion.explanation || "淨化成功 +10 分，繼續挑戰下一題！");
-      } else {
+        spawnFloating(targetData.x, targetData.y, true);
+        setFeedback("✨", "淨化攻擊成功！", q.story);
+        setTimeout(() => {
+          state.index += 1;
+          if(state.index >= QUESTIONS.length){
+            endGame(true);
+          }else{
+            buildQuestion();
+          }
+        }, 280);
+      }else{
         state.lives -= 1;
-        state.wrong += 1;
         targetData.el.classList.add('wrong-hit');
-        spawnFloating(x, y, 'bad');
-        const correctOption = state.currentQuestion.options.find(o => o.key === state.currentQuestion.correct);
-        setFeedback("💥", "污染擴散了", `正確淨化方式：${correctOption ? correctOption.text : '請參考宣導內容'}`);
+        spawnFloating(targetData.x, targetData.y, false);
+        const answer = q.options[q.answer];
+        setFeedback("💀", "污染擴散！", `正確答案是：「${answer}」。${q.story}`);
+        updateStats();
+        if(state.lives <= 0){
+          setTimeout(() => endGame(false), 360);
+        }else{
+          setTimeout(() => {
+            if(state.playing){
+              state.index += 1;
+              if(state.index >= QUESTIONS.length){
+                endGame(true);
+              }else{
+                buildQuestion();
+              }
+            }
+          }, 360);
+        }
       }
-
       updateStats();
-
-      if (state.lives <= 0) {
-        setTimeout(() => endGame('守護力歸零，本次挑戰提早結束。'), 280);
-        return;
-      }
-
-      setTimeout(() => {
-        if (state.playing) nextQuestion();
-      }, isCorrect ? 260 : 380);
     }
 
-    function animate(ts) {
-      if (!state.playing) return;
-      if (!state.lastFrameTs) state.lastFrameTs = ts;
-      const dt = Math.min(0.035, (ts - state.lastFrameTs) / 1000);
+    function animate(ts){
+      if(!state.playing) return;
+      if(!state.lastFrameTs) state.lastFrameTs = ts;
+      const dt = Math.min(0.035, (ts - state.lastFrameTs)/1000);
       state.lastFrameTs = ts;
 
       state.activeTargets.forEach(t => {
         t.x += t.vx * dt;
         t.y += t.vy * dt;
-
-        if (t.x < t.minX) { t.x = t.minX; t.vx *= -1; }
-        if (t.x > t.maxX) { t.x = t.maxX; t.vx *= -1; }
-        if (t.y < t.minY) { t.y = t.minY; t.vy *= -1; }
-        if (t.y > t.maxY) { t.y = t.maxY; t.vy *= -1; }
-
+        if(t.x < t.minX){ t.x = t.minX; t.vx *= -1; }
+        if(t.x > t.maxX){ t.x = t.maxX; t.vx *= -1; }
+        if(t.y < t.minY){ t.y = t.minY; t.vy *= -1; }
+        if(t.y > t.maxY){ t.y = t.maxY; t.vy *= -1; }
         t.el.style.left = t.x + 'px';
         t.el.style.top = t.y + 'px';
       });
@@ -926,88 +688,68 @@
       state.animationId = requestAnimationFrame(animate);
     }
 
-    function startGame(ev) {
-      if (ev) ev.preventDefault();
-      state.score = 0;
-      state.lives = CONFIG.startLives;
-      state.timeLeft = CONFIG.gameSeconds;
-      state.correct = 0;
-      state.wrong = 0;
-      state.playing = true;
-      state.lastFrameTs = 0;
-
+    function startGame(ev){
+      if(ev) ev.preventDefault();
+      state = {
+        index: 0,
+        score: 0,
+        lives: 5,
+        correct: 0,
+        playing: true,
+        activeTargets: [],
+        animationId: null,
+        lastFrameTs: 0,
+        answerLocked: false
+      };
+      clearTargets();
       updateStats();
       startOverlay.classList.add('hide');
       endOverlay.classList.add('hide');
-      rewardActions.innerHTML = "";
-      nextQuestion();
-
-      clearInterval(state.timerId);
-      state.timerId = setInterval(() => {
-        state.timeLeft -= 1;
-        updateStats();
-        if (state.timeLeft <= 0) {
-          endGame('時間到，本次守護任務結束。');
-        }
-      }, 1000);
-
+      buildQuestion();
       cancelAnimationFrame(state.animationId);
       state.animationId = requestAnimationFrame(animate);
     }
 
-    function endGame(reason) {
-      if (!state.playing) return;
+    function endGame(success){
       state.playing = false;
-      clearInterval(state.timerId);
+      state.answerLocked = true;
       cancelAnimationFrame(state.animationId);
       clearTargets();
 
+      document.getElementById('finalProgress').textContent = `${state.index >= QUESTIONS.length ? QUESTIONS.length : state.index}/${QUESTIONS.length}`;
       document.getElementById('finalScore').textContent = state.score;
       document.getElementById('finalCorrect').textContent = state.correct;
-      document.getElementById('finalWrong').textContent = state.wrong;
       document.getElementById('finalLife').textContent = Math.max(0, state.lives);
-      document.getElementById('endTitle').textContent = state.score >= CONFIG.passScore ? '恭喜成為分類英雄！' : '守護任務完成';
-      document.getElementById('endText').textContent =
-        state.score >= CONFIG.passScore
-          ? `你得到 ${state.score} 分 分，已超過 100 分英雄門檻，可以前往 LINE 領取抽獎機會。`
-          : `${reason} 你本次得到 ${state.score} 分，再接再厲，看看能不能成為真正的分類英雄！`;
+      document.getElementById('endTitle').textContent = success ? '任務圓滿完成！' : '守護任務失敗';
+      document.getElementById('endText').textContent = success
+        ? '你已完成 10 題固定任務，成功學會廚餘回收流程，守住了地球防線！現在可以前往 LINE 參加抽獎活動。'
+        : '守護力已耗盡，污染怪物暫時擴散了。再挑戰一次，把廚餘回收流程學起來！';
 
+      const rewardActions = document.getElementById('rewardActions');
       rewardActions.innerHTML = '';
-      if (state.score >= CONFIG.passScore) {
-        const link = document.createElement('a');
-        link.className = 'link-btn';
-        link.href = CONFIG.lineUrl;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = '前往 LINE 領取獎勵';
-        rewardActions.appendChild(link);
+
+      if(success){
+        const lineLink = document.createElement('a');
+        lineLink.className = 'link-btn';
+        lineLink.href = LINE_DRAW_URL;
+        lineLink.target = '_blank';
+        lineLink.rel = 'noopener noreferrer';
+        lineLink.textContent = '前往 LINE 抽獎';
+        rewardActions.appendChild(lineLink);
       }
 
-      const restart = document.createElement('button');
-      restart.className = 'ghost-btn';
-      restart.type = 'button';
-      restart.textContent = '再守護一次';
-      restart.addEventListener('click', startGame);
-      rewardActions.appendChild(restart);
+      const restartBtn = document.createElement('button');
+      restartBtn.className = 'ghost-btn';
+      restartBtn.id = 'restartBtn';
+      restartBtn.textContent = '再守護一次';
+      restartBtn.addEventListener('pointerup', startGame, {passive:false});
+      rewardActions.appendChild(restartBtn);
 
       endOverlay.classList.remove('hide');
     }
 
-    startBtn.addEventListener('click', startGame, { passive:false });
-    startBtn.addEventListener('touchstart', startGame, { passive:false });
-    startBtn.addEventListener('touchend', startGame, { passive:false });
-    startBtn.addEventListener('pointerup', startGame, { passive:false });
+    document.getElementById('startBtn').addEventListener('pointerup', startGame, {passive:false});
 
-    window.addEventListener('resize', () => {
-      setViewportUnit();
-      refreshBounds();
-    });
-    window.addEventListener('orientationchange', () => {
-      setViewportUnit();
-      setTimeout(refreshBounds, 120);
-    });
-
-    setViewportUnit();
     updateStats();
   </script>
 </body>
