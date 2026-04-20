@@ -18,7 +18,7 @@
     }
     * { box-sizing:border-box; -webkit-tap-highlight-color: transparent; user-select:none; }
     html,body{
-      margin:0; height:100%; overflow:hidden;
+      margin:0; height:100%; overflow:hidden; touch-action: manipulation;
       font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
       color:var(--text);
       background:
@@ -35,7 +35,7 @@
       min-height:100dvh;
       max-height:100dvh;
       margin:0 auto;
-      overflow:hidden;
+      overflow:hidden; touch-action: manipulation;
     }
     .glass{
       background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.08));
@@ -56,9 +56,22 @@
 
     #arena{
       position:absolute; inset:0;
-      overflow:hidden;
+      overflow:hidden; touch-action: manipulation;
       z-index:5;
       touch-action:manipulation;
+    }
+
+
+    #arena::before{
+      content:"";
+      position:absolute;
+      inset:8px 10px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,.04), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
+      border:1px dashed rgba(255,255,255,.06);
+      pointer-events:none;
     }
 
     .topbar{
@@ -67,7 +80,7 @@
     }
     .hero{
       padding:14px 14px 12px;
-      position:relative; overflow:hidden;
+      position:relative; overflow:hidden; touch-action: manipulation;
     }
     .hero::after{
       content:"";
@@ -179,7 +192,7 @@
     .feedback strong{display:block; font-size:16px; margin-bottom:4px;}
     .feedback p{
       margin:0; color:var(--muted); font-size:12px; line-height:1.45;
-      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; touch-action: manipulation;
     }
 
     .target{
@@ -312,7 +325,20 @@
 
     @media (max-width:560px){
       .app{ width:100vw; }
-      .topbar{ padding:calc(8px + var(--safe-top)) 8px 6px; }
+  
+    #arena::before{
+      content:"";
+      position:absolute;
+      inset:8px 10px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,.04), transparent 26%),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
+      border:1px dashed rgba(255,255,255,.06);
+      pointer-events:none;
+    }
+
+    .topbar{ padding:calc(8px + var(--safe-top)) 8px 6px; }
       .hero{ padding:12px 12px 10px; border-radius:22px; }
       .hero-title{ font-size:28px; }
       .hero-sub{ max-width:60%; font-size:12px; line-height:1.4; }
@@ -348,7 +374,31 @@
       .action-btn,.ghost-btn,.link-btn{ width:100%; min-width:0; }
       .summary-grid{ grid-template-columns:repeat(2,1fr); }
     }
-  </style>
+  
+@media (max-width: 768px){
+  .target{
+    width:88px !important;
+    height:88px !important;
+    font-size:12px;
+  }
+  .target-label{
+    width:64px !important;
+    height:64px !important;
+    font-size:12px !important;
+  }
+  .question-text{
+    font-size:18px !important;
+  }
+  .hero-title{
+    font-size:26px !important;
+  }
+  #arena{
+    top:290px !important;
+    bottom:88px !important;
+  }
+}
+
+</style>
 </head>
 <body>
   <div class="app">
@@ -580,16 +630,17 @@
       setFeedback("📘", `任務 ${state.index + 1}／10`, q.story);
 
       const rect = arena.getBoundingClientRect();
-      const topLimit = Math.max(270, rect.height * 0.40);
-      const bottomLimit = rect.height - 120;
       const leftLimit = 72;
-      const rightLimit = rect.width - 72;
+      const rightLimit = Math.max(leftLimit + 40, rect.width - 72);
+      const topLimit = 84;
+      const bottomLimit = Math.max(topLimit + 80, rect.height - 84);
 
       const order = shuffle([0,1,2]);
+      const midY = topLimit + (bottomLimit - topLimit) * 0.52;
       const positions = [
-        {x: rect.width * 0.25, y: rect.height * 0.58},
-        {x: rect.width * 0.50, y: rect.height * 0.70},
-        {x: rect.width * 0.75, y: rect.height * 0.58}
+        {x: rect.width * 0.22, y: midY - 10},
+        {x: rect.width * 0.50, y: midY + 24},
+        {x: rect.width * 0.78, y: midY - 10}
       ];
 
       order.forEach((optIndex, i) => {
@@ -616,7 +667,7 @@
           if(!state.playing) return;
           handleAnswer(data, q);
         };
-        target.addEventListener('pointerup', choose, {passive:false});
+        target.addEventListener('pointerup', choose, {passive:false}); target.style.touchAction='manipulation';
 
         target.style.left = data.x + 'px';
         target.style.top = data.y + 'px';
@@ -674,7 +725,10 @@
       const dt = Math.min(0.035, (ts - state.lastFrameTs)/1000);
       state.lastFrameTs = ts;
 
+      const rect = arena.getBoundingClientRect();
       state.activeTargets.forEach(t => {
+        t.maxX = Math.max(t.minX + 40, rect.width - 72);
+        t.maxY = Math.max(t.minY + 80, rect.height - 84);
         t.x += t.vx * dt;
         t.y += t.vy * dt;
         if(t.x < t.minX){ t.x = t.minX; t.vx *= -1; }
