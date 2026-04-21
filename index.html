@@ -55,8 +55,12 @@
     .spark{font-size:18px;}
 
     #arena{
-      position:absolute; inset:0;
-      overflow:hidden; touch-action: manipulation;
+      position:absolute;
+      left:0;
+      right:0;
+      top:340px;
+      bottom:96px;
+      overflow:hidden;
       z-index:5;
       touch-action:manipulation;
     }
@@ -71,6 +75,18 @@
         radial-gradient(circle at 50% 18%, rgba(255,255,255,.04), transparent 26%),
         linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
       border:1px dashed rgba(255,255,255,.06);
+      pointer-events:none;
+    }
+    #arena::after{
+      content:"";
+      position:absolute;
+      left:6%;
+      right:6%;
+      top:42%;
+      bottom:28%;
+      border-radius:26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      border:1px dashed rgba(103,232,249,.10);
       pointer-events:none;
     }
 
@@ -337,6 +353,18 @@
       border:1px dashed rgba(255,255,255,.06);
       pointer-events:none;
     }
+    #arena::after{
+      content:"";
+      position:absolute;
+      left:6%;
+      right:6%;
+      top:42%;
+      bottom:28%;
+      border-radius:26px;
+      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      border:1px dashed rgba(103,232,249,.10);
+      pointer-events:none;
+    }
 
     .topbar{ padding:calc(8px + var(--safe-top)) 8px 6px; }
       .hero{ padding:12px 12px 10px; border-radius:22px; }
@@ -393,7 +421,7 @@
     font-size:26px !important;
   }
   #arena{
-    top:290px !important;
+    top:300px !important;
     bottom:88px !important;
   }
 }
@@ -505,16 +533,6 @@
     "story": "避免增加處理負擔"
   },
   {
-    "question": "便當吃剩的飯菜應如何分類？",
-    "options": [
-      "飯菜廚餘",
-      "資源回收",
-      "一般垃圾"
-    ],
-    "answer": 0,
-    "story": "剩飯剩菜屬廚餘"
-  },
-  {
     "question": "水果皮屬於？",
     "options": [
       "廚餘",
@@ -525,24 +543,34 @@
     "story": "常見廚餘"
   },
   {
-    "question": "塑膠袋裝廚餘可以嗎？",
+    "question": "雞排吃剩的骨頭屬於？",
+    "options": [
+      "一般垃圾",
+      "資源回收",
+      "廚餘"
+    ],
+    "answer": 0,
+    "story": "堅硬不易粉碎無法作為堆肥或豬隻飼料"
+  },
+  {
+    "question": "廚餘可以連同塑膠袋回收嗎？",
     "options": [
       "可以",
-      "不行",
+      "要分開處理",
       "都可"
     ],
     "answer": 1,
-    "story": "需分開"
+    "story": "髒污的塑膠袋為一般垃圾"
   },
   {
-    "question": "廚餘需要分類嗎？",
+    "question": "煎完荷包蛋的蛋殼該如何處理?",
     "options": [
-      "需要",
-      "不用",
-      "看心情"
+      "廚餘回收",
+      "一般垃圾",
+      "丟路邊水溝"
     ],
     "answer": 0,
-    "story": "基本觀念"
+    "story": "蛋殼屬天然有機物，可作為廚餘回收"
   },
   {
     "question": "廚餘可做什麼？",
@@ -555,14 +583,14 @@
     "story": "再利用作為肥料堆肥或豬隻飼料"
   },
   {
-    "question": "硬骨頭屬於？",
+    "question": "便當吃剩的飯菜應如何分類？",
     "options": [
-      "垃圾",
-      "不可回收",
-      "廚餘"
+      "廚餘",
+      "資源回收",
+      "一般垃圾"
     ],
     "answer": 0,
-    "story": "堅硬不易粉碎無法作為堆肥或豬隻飼料"
+    "story": "剩飯剩菜屬廚餘"
   },
   {
     "question": "剩菜湯廚餘回收前步驟？",
@@ -575,19 +603,19 @@
     "story": "減少水分"
   },
   {
-    "question": "紙餐盒沾食物？",
+    "question": "煮完菜剩下的廢食用油，可以直接當廚餘回收嗎？",
     "options": [
-      "丟垃圾",
-      "廚餘",
-      "沖洗後回收"
+      "可以，屬於食物",
+      "不可以，需另外獨立回收",
+      "直接丟一般垃圾"
     ],
-    "answer": 2,
-    "story": "髒污不可回收"
+    "answer": 1,
+    "story": "廢食用油應裝罐後交由清潔隊或專門回收商處理，避免影響廚餘處理品質及造成環境污染"
   },
   {
-    "question": "做好分類的目的是？",
+    "question": "做好廚餘分類的目的是？",
     "options": [
-      "減少污染",
+      "減少污染及垃圾量",
       "沒差",
       "浪費時間"
     ],
@@ -670,17 +698,19 @@
       setFeedback("📘", `任務 ${state.index + 1}／10`, q.story);
 
       const rect = arena.getBoundingClientRect();
-      const leftLimit = 72;
-      const rightLimit = Math.max(leftLimit + 40, rect.width - 72);
-      const topLimit = 84;
-      const bottomLimit = Math.max(topLimit + 80, rect.height - 84);
+      const leftLimit = 84;
+      const rightLimit = Math.max(leftLimit + 40, rect.width - 84);
+
+      const centerBandTop = rect.height * 0.42;
+      const centerBandBottom = rect.height * 0.72;
+      const topLimit = centerBandTop;
+      const bottomLimit = centerBandBottom;
 
       const order = shuffle([0,1,2]);
-      const midY = topLimit + (bottomLimit - topLimit) * 0.52;
       const positions = [
-        {x: rect.width * 0.22, y: midY - 10},
-        {x: rect.width * 0.50, y: midY + 24},
-        {x: rect.width * 0.78, y: midY - 10}
+        {x: rect.width * 0.28, y: rect.height * 0.52},
+        {x: rect.width * 0.50, y: rect.height * 0.62},
+        {x: rect.width * 0.72, y: rect.height * 0.52}
       ];
 
       order.forEach((optIndex, i) => {
@@ -767,8 +797,9 @@
 
       const rect = arena.getBoundingClientRect();
       state.activeTargets.forEach(t => {
-        t.maxX = Math.max(t.minX + 40, rect.width - 72);
-        t.maxY = Math.max(t.minY + 80, rect.height - 84);
+        t.maxX = Math.max(t.minX + 40, rect.width - 84);
+        t.minY = rect.height * 0.42;
+        t.maxY = rect.height * 0.72;
         t.x += t.vx * dt;
         t.y += t.vy * dt;
         if(t.x < t.minX){ t.x = t.minX; t.vx *= -1; }
