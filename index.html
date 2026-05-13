@@ -179,7 +179,7 @@
       line-height:1.25; font-weight:900;
     }
     .scoreboard{
-      display:grid; grid-template-columns:repeat(4,1fr); gap:8px; width:min(100%,332px);
+      display:grid; grid-template-columns:repeat(3,1fr); gap:8px; width:min(100%,260px);
     }
     .metric{
       min-width:72px;
@@ -380,7 +380,7 @@
       .question-box{ min-height:78px; padding:10px 12px; border-radius:18px; }
       .question-label{ font-size:12px; margin-bottom:6px; }
       .question-text{ font-size:19px; }
-      .scoreboard{ width:100%; grid-template-columns:repeat(4,1fr); gap:6px; }
+      .scoreboard{ width:100%; grid-template-columns:repeat(3,1fr); gap:6px; }
       .metric{ min-width:0; padding:8px 4px; border-radius:14px; }
       .metric .k{ font-size:10px; }
       .metric .v{ font-size:17px; }
@@ -430,26 +430,16 @@
 </head>
 <body>
   <div class="app">
-    <div class="deco cloud" style="left:6%; top:14%;">☁️</div>
-    <div class="deco cloud" style="right:8%; top:28%;">☁️</div>
-    <div class="deco leaf" style="left:7%; bottom:24%;">🍃</div>
-    <div class="deco leaf" style="right:10%; bottom:18%;">🌿</div>
-    <div class="deco spark" style="left:14%; top:42%;">♻️</div>
-    <div class="deco spark" style="right:13%; top:52%;">🌱</div>
-    <div class="deco spark" style="left:8%; top:62%;">✨</div>
-    <div class="deco leaf" style="right:16%; top:44%;">🌍</div>
-    <div class="deco spark" style="left:22%; top:10%;">🛡️</div>
-    <div class="deco spark" style="right:24%; bottom:12%;">🍎</div>
 
     <div id="arena"></div>
 
     <div class="topbar">
       <div class="glass hero">
-        <div class="hero-kicker">🌍 守護地球劇情任務</div>
+        <div class="hero-kicker">🌍 守護地球任務</div>
         <div class="hero-title">環保戰士<span class="accent">廚餘淨化任務</span></div>
-        <div class="hero-sub">地球遭到廚餘污染怪物入侵。你要依序完成 10 個固定任務，學會正確廚餘回收流程，才能守住地球防線。</div>
+        <div class="hero-sub">地球遭到廚餘污染怪物入侵。請完成 10 個任務，學會正確廚餘回收流程，守住地球防線。</div>
         <div class="hero-tags">
-          <div class="hero-tag">📖 固定 10 題劇情任務</div>
+          <div class="hero-tag">📖 廚餘淨化任務</div>
           <div class="hero-tag">⏳ 無時間限制</div>
           <div class="hero-tag">❤️ 守護力 5 點</div>
           <div class="hero-tag">✨ 答對啟動淨化攻擊</div>
@@ -469,7 +459,6 @@
           <div class="metric"><div class="k">任務進度</div><div class="v" id="progressValue">1/10</div></div>
           <div class="metric"><div class="k">淨化分數</div><div class="v" id="scoreValue">0</div></div>
           <div class="metric"><div class="k">守護力</div><div class="v" id="lifeValue">5</div></div>
-          <div class="metric"><div class="k">任務總數</div><div class="v">10</div></div>
         </div>
       </div>
     </div>
@@ -479,7 +468,7 @@
         <div class="feedback-badge" id="feedbackBadge">📖</div>
         <div>
           <strong id="feedbackTitle">劇情開始</strong>
-          <p id="feedbackText">這次不再使用隨機題庫。請依照故事進度，完成 10 題固定的廚餘回收任務。</p>
+          <p id="feedbackText">請完成 10 題廚餘回收任務。</p>
         </div>
       </div>
     </div>
@@ -487,13 +476,13 @@
     <div class="overlay" id="startOverlay">
       <div class="glass modal">
         <h1>🌍 廚餘淨化任務啟動</h1>
-        <p>污染怪物正利用錯誤的廚餘處理方式擴散危機。你是環保戰士，必須依序破解 10 個固定任務，學會廚餘回收流程與注意事項，才能讓地球恢復乾淨。</p>
+        <p>污染怪物正利用錯誤的廚餘處理方式擴散危機。你是環保戰士，必須破解 10 個挑戰，學會廚餘回收流程與注意事項，才能讓地球恢復乾淨。</p>
         <div class="pill-row">
-          <div class="pill">📖 固定 10 題</div>
+          <div class="pill">📖 廚餘淨化</div>
           <div class="pill">🎯 直接點擊標靶作答</div>
           <div class="pill">💀 答錯會污染擴散</div>
           <div class="pill">⏳ 無時間限制</div>
-          <div class="pill">🎁 完成任務可抽獎</div>
+          <div class="pill">🎁 答對 5 題以上可抽獎</div>
         </div>
         <div class="modal-actions">
           <button class="action-btn" id="startBtn">開始任務</button>
@@ -537,7 +526,7 @@
     "options": [
       "廚餘",
       "垃圾",
-      "回收"
+      "紙類回收"
     ],
     "answer": 0,
     "story": "常見廚餘"
@@ -545,11 +534,11 @@
   {
     "question": "雞排吃剩的骨頭屬於？",
     "options": [
-      "一般垃圾",
-      "資源回收",
-      "廚餘"
+      "廚餘",
+      "塑膠回收",
+      "一般垃圾"
     ],
-    "answer": 0,
+    "answer": 2,
     "story": "堅硬不易粉碎無法作為堆肥或豬隻飼料"
   },
   {
@@ -573,34 +562,14 @@
     "story": "蛋殼屬天然有機物，可作為廚餘回收"
   },
   {
-    "question": "廚餘可做什麼？",
-    "options": [
-      "堆肥",
-      "焚化",
-      "丟棄"
-    ],
-    "answer": 0,
-    "story": "再利用作為肥料堆肥或豬隻飼料"
-  },
-  {
     "question": "便當吃剩的飯菜應如何分類？",
     "options": [
       "廚餘",
-      "資源回收",
+      "玻璃回收",
       "一般垃圾"
     ],
     "answer": 0,
     "story": "剩飯剩菜屬廚餘"
-  },
-  {
-    "question": "剩菜湯廚餘回收前步驟？",
-    "options": [
-      "直接倒",
-      "瀝乾",
-      "丟垃圾"
-    ],
-    "answer": 1,
-    "story": "減少水分"
   },
   {
     "question": "煮完菜剩下的廢食用油，可以直接當廚餘回收嗎？",
@@ -611,6 +580,26 @@
     ],
     "answer": 1,
     "story": "廢食用油應裝罐後交由清潔隊或專門回收商處理，避免影響廚餘處理品質及造成環境污染"
+  },
+  {
+    "question": "廚餘可以透過焚化爐處理嗎",
+    "options": [
+      "可以",
+      "不可以",
+      "看心情"
+    ],
+    "answer": 1,
+    "story": "不僅會影響焚化效率亙會造成惡臭及空氣污染"
+  },
+  {
+    "question": "廚餘回收可以拿來如何再利用",
+    "options": [
+      "做成肥料",
+      "產生沼氣變能源",
+      "以上皆可"
+    ],
+    "answer": 2,
+    "story": "廚餘除了可以做成堆肥還能產生沼氣當作再生能源"
   },
   {
     "question": "做好廚餘分類的目的是？",
@@ -789,6 +778,59 @@
       updateStats();
     }
 
+
+    function resolveTargetCollisions(){
+      const minDistance = window.innerWidth <= 768 ? 92 : 116;
+      const bounceStrength = 0.9;
+      for(let i = 0; i < state.activeTargets.length; i++){
+        for(let j = i + 1; j < state.activeTargets.length; j++){
+          const a = state.activeTargets[i];
+          const b = state.activeTargets[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          let dist = Math.hypot(dx, dy);
+          if(dist === 0){
+            dist = 0.01;
+            b.x += 1;
+          }
+          if(dist < minDistance){
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const overlap = (minDistance - dist) / 2;
+
+            a.x -= nx * overlap;
+            a.y -= ny * overlap;
+            b.x += nx * overlap;
+            b.y += ny * overlap;
+
+            const relativeVx = b.vx - a.vx;
+            const relativeVy = b.vy - a.vy;
+            const speedAlongNormal = relativeVx * nx + relativeVy * ny;
+
+            if(speedAlongNormal < 0){
+              const impulse = -(1 + bounceStrength) * speedAlongNormal / 2;
+              a.vx -= impulse * nx;
+              a.vy -= impulse * ny;
+              b.vx += impulse * nx;
+              b.vy += impulse * ny;
+            }else{
+              a.vx -= nx * 8;
+              a.vy -= ny * 8;
+              b.vx += nx * 8;
+              b.vy += ny * 8;
+            }
+
+            [a,b].forEach(t => {
+              if(t.x < t.minX){ t.x = t.minX; t.vx = Math.abs(t.vx); }
+              if(t.x > t.maxX){ t.x = t.maxX; t.vx = -Math.abs(t.vx); }
+              if(t.y < t.minY){ t.y = t.minY; t.vy = Math.abs(t.vy); }
+              if(t.y > t.maxY){ t.y = t.maxY; t.vy = -Math.abs(t.vy); }
+            });
+          }
+        }
+      }
+    }
+
     function animate(ts){
       if(!state.playing) return;
       if(!state.lastFrameTs) state.lastFrameTs = ts;
@@ -806,6 +848,11 @@
         if(t.x > t.maxX){ t.x = t.maxX; t.vx *= -1; }
         if(t.y < t.minY){ t.y = t.minY; t.vy *= -1; }
         if(t.y > t.maxY){ t.y = t.maxY; t.vy *= -1; }
+      });
+
+      resolveTargetCollisions();
+
+      state.activeTargets.forEach(t => {
         t.el.style.left = t.x + 'px';
         t.el.style.top = t.y + 'px';
       });
@@ -847,20 +894,28 @@
       document.getElementById('finalLife').textContent = Math.max(0, state.lives);
       document.getElementById('endTitle').textContent = success ? '任務圓滿完成！' : '守護任務失敗';
       document.getElementById('endText').textContent = success
-        ? '你已完成 10 題固定任務，成功學會廚餘回收流程，守住了地球防線！現在可以前往 LINE 參加抽獎活動。'
+        ? '你已完成廚餘回收挑戰，成功守住地球防線！'
         : '守護力已耗盡，污染怪物暫時擴散了。再挑戰一次，把廚餘回收流程學起來！';
 
       const rewardActions = document.getElementById('rewardActions');
       rewardActions.innerHTML = '';
 
       if(success){
-        const lineLink = document.createElement('a');
-        lineLink.className = 'link-btn';
-        lineLink.href = LINE_DRAW_URL;
-        lineLink.target = '_blank';
-        lineLink.rel = 'noopener noreferrer';
-        lineLink.textContent = '前往 LINE 抽獎';
-        rewardActions.appendChild(lineLink);
+        if(state.correct >= 5){
+          const lineLink = document.createElement('a');
+          lineLink.className = 'link-btn';
+          lineLink.href = LINE_DRAW_URL;
+          lineLink.target = '_blank';
+          lineLink.rel = 'noopener noreferrer';
+          lineLink.textContent = '前往 LINE 抽獎';
+          rewardActions.appendChild(lineLink);
+
+          document.getElementById('endText').textContent =
+            '恭喜達成抽獎門檻！你已答對 5 題以上，可以前往 LINE 參加抽獎活動。';
+        } else {
+          document.getElementById('endText').textContent =
+            '本次未達抽獎門檻（需答對 5 題以上），是否要再挑戰一次呢？';
+        }
       }
 
       const restartBtn = document.createElement('button');
